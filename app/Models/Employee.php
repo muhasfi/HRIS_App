@@ -39,4 +39,14 @@ class Employee extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function presences()
+    {
+        return $this->hasMany(Presence::class);
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(EmployeeSchedule::class);
+    }
 }

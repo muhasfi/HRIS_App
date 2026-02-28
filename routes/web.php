@@ -3,11 +3,13 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EmployeeScheduleController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +35,15 @@ Route::middleware('auth')->group(function () {
     
     //payroll
     Route::resource('payrolls', PayrollController::class)->middleware('role:HR,Developer,Sales Person');
+    Route::get('/payrolls/{id}/slip', [PayrollController::class, 'slip'])->name('payrolls.slip');
+
+    //Employee Schedules
+    // Route::resource('employee-schedules', EmployeeScheduleController::class);
+    Route::get('employee-schedules', [EmployeeScheduleController::class, 'index'])->name('employee-schedules.index');
+
+    Route::get('employee-schedules/{employee}/edit', [EmployeeScheduleController::class, 'edit'])->name('employee-schedules.edit');
+
+    Route::put('employee-schedules/{employee}', [EmployeeScheduleController::class, 'update'])->name('employee-schedules.update');
     
     //leave-requests
     Route::resource('leave-requests', LeaveRequestController::class)->middleware('role:HR,Developer,Sales Person');

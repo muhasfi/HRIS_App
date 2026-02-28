@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => App\Http\Middleware\CheckRole::class,
         ]);
     })
+    ->withCommands([
+        App\Console\Commands\GenerateAlpha::class,
+    ])
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

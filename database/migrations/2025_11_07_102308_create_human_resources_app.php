@@ -20,6 +20,15 @@ return new class extends Migration
         //     $table->timestamps();
         //     $table->softDeletes();
         // });
+
+        // Schema::create('master.shifts', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name'); // Contoh: "Shift Pagi", "Shift Malam"
+        //     $table->time('start_time'); // Jam mulai shift
+        //     $table->time('end_time');   // Jam selesai shift
+        //     $table->integer('late_tolerance')->default(0); // Toleransi telat dalam menit
+        //     $table->timestamps();
+        // });
         
         // Schema::create('master.roles', function (Blueprint $table) {
         //     $table->id();
@@ -34,8 +43,11 @@ return new class extends Migration
         //     $table->foreignId('user_id')
         //             ->unique() // supaya benar-benar 1 user = 1 employee
         //             ->constrained('auth.users')
-        //             ->cascadeOnDelete();
-
+        //             ->cascadeOnDelete(); 
+        // $table->foreignId('shift_id')
+                // ->nullable()
+                // ->constrained('master.shifts')
+                // ->onDelete('set null');
         //     $table->string('fullname');
         //     // $table->string('email')->unique();
         //     $table->string('phone_number');
@@ -57,11 +69,20 @@ return new class extends Migration
         //     $table->timestamps();
         //     $table->softDeletes();
         // });
+
+        // Schema::create('master.employee_schedules', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('employee_id')->constrained('master.employees')->onDelete('cascade');
+        //     $table->tinyInteger('day_of_week'); // 0=Sunday, 1=Monday, ..., 6=Saturday
+        //     $table->time('start_time');
+        //     $table->time('end_time');
+        //     $table->timestamps();
+        // });
         
         // Schema::create('transactions.tasks', function (Blueprint $table) {
         //     $table->id();
 
-        //     $table->string('title')->unique();
+        //     $table->string('title');
         //     $table->text('description')->nullable();
 
         //     $table->foreignId('assigned_to')
@@ -86,6 +107,12 @@ return new class extends Migration
         //     $table->decimal('deductions', 12, 2)->default(0);
         //     $table->decimal('net_salary', 12, 2);
 
+            // $table->integer('total_alpha')->default(0);
+            // $table->integer('total_late_minutes')->default(0);
+
+            // $table->decimal('deduction_alpha', 15, 2)->default(0);
+            // $table->decimal('deduction_late', 15, 2)->default(0);
+
         //     $table->date('pay_date');
 
         //     $table->timestamps();
@@ -107,6 +134,7 @@ return new class extends Migration
         //     $table->decimal('check_out_lat')->nullable();
         //     $table->decimal('check_out_long')->nullable();
         //     $table->string('status');
+        //     $table->integer('late_minutes')->default(0);
         //     $table->timestamps();
         //     $table->softDeletes();
         // });
@@ -127,6 +155,8 @@ return new class extends Migration
         //     $table->timestamps();
         //     $table->softDeletes();
         // });
+
+        
     }
     /**
      * Reverse the migrations.

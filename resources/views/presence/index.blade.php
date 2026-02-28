@@ -30,9 +30,15 @@
                 <div class="d-flex">
                     @if (session('role') != 'HR')
                         @if(!$todayPresence)
+                        @if($hasSchedule)
                             <a href="{{ route('presences.create') }}" class="btn btn-success mb-3 ms-auto">
                                 Check In Today
                             </a>
+                        @else
+                            <button type="button" class="btn btn-secondary mb-3 ms-auto" disabled>
+                                Schedule Belum Dibuat
+                            </button>
+                        @endif
 
                         @elseif(!$todayPresence->check_out)
                             <a href="{{ route('presences.create') }}" class="btn btn-warning mb-3 ms-auto">
@@ -85,14 +91,18 @@
                                 <td>{{ $presence->date }}</td>
 
                                 <td>
-                                    @if($presence->status == 'present')
+                                   @if($presence->status == 'present')
                                         <span class="badge bg-success">Present</span>
                                     @elseif($presence->status == 'late')
                                         <span class="badge bg-warning">Late</span>
-                                    @elseif($presence->status == 'leave')
-                                        <span class="badge bg-info">Leave</span>
+                                    @elseif($presence->status == 'absen')
+                                        <span class="badge bg-danger">Absen</span>
+                                    @elseif($presence->status == 'ijin')
+                                        <span class="badge bg-info">Ijin</span>
+                                    @elseif($presence->status == 'cuti')
+                                        <span class="badge bg-primary">Cuti</span>
                                     @else
-                                        <span class="badge bg-danger">{{ ucfirst($presence->status) }}</span>
+                                        <span class="badge bg-secondary">{{ ucfirst($presence->status) }}</span>
                                     @endif
                                 </td>
 

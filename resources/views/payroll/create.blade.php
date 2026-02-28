@@ -56,26 +56,20 @@
                         <select name="employee_id" id="employee_id" class="form-control">
                             <option value="" selected disabled>-- Select Employee --</option>
                             @foreach($employees as $employee)
-                                <option value="{{ $employee->id }}">{{ $employee->fullname }}</option>
+                                <option 
+                                    value="{{ $employee->id }}"
+                                    data-salary="{{ $employee->salary }}"
+                                >
+                                    {{ $employee->fullname }}
+                                </option>
                             @endforeach
                         </select>
-                        @error('employee_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
                     </div>
         
                     <div class="mb-3">
                         <label for="salary" class="form-label">Salary</label>
-                        <input type="number" class="form-control @error('salary') is-invalid @enderror" name="salary" value="{{ old('salary') }}" required>
+                        <input type="number" class="form-control @error('salary') is-invalid @enderror" id="salary" readonly>
                         @error('salary')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-        
-                    <div class="mb-3">
-                        <label for="deductions" class="form-label">Deduction</label>
-                        <input type="number" class="form-control @error('deductions') is-invalid @enderror" name="deductions" value="{{ old('deductions') }}" required>
-                        @error('deductions')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -89,11 +83,8 @@
                     </div>
         
                     <div class="mb-3">
-                        <label for="net_salary" class="form-label">Net Salary</label>
-                        <input type="number" class="form-control @error('net_salary') is-invalid @enderror" name="net_salary" value="{{ old('net_salary') }}" disabled>
-                        @error('net_salary')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <label class="form-label">Estimated Net Salary</label>
+                        <input type="number" id="net_salary_preview" class="form-control" readonly>
                     </div>
 
                     <div class="mb-3">
@@ -115,20 +106,31 @@
 
 
 <script>
-    function calculateNetSalary() {
-        let salary     = parseFloat(document.querySelector('input[name="salary"]').value)     || 0;
-        let deductions = parseFloat(document.querySelector('input[name="deductions"]').value) || 0;
-        let bonuses    = parseFloat(document.querySelector('input[name="bonuses"]').value)    || 0;
+document.addEventListener("DOMContentLoaded", function () {
 
-        let netSalary = salary - deductions + bonuses;
+    const employeeSelect = document.getElementById('employee_id');
+    const salaryInput    = document.getElementById('salary');
+    const bonusInput     = document.querySelector('input[name="bonuses"]');
+    const netPreview     = document.getElementById('net_salary_preview');
 
-        document.querySelector('input[name="net_salary"]').value = netSalary;
+    function calculatePreview() {
+        let salary  = parseFloat(salaryInput.value) || 0;
+        let bonuses = parseFloat(bonusInput.value)  || 0;
+
+        netPreview.value = salary + bonuses;
     }
 
-    // Jalankan setiap kali input berubah
-    document.querySelector('input[name="salary"]').addEventListener('input', calculateNetSalary);
-    document.querySelector('input[name="deductions"]').addEventListener('input', calculateNetSalary);
-    document.querySelector('input[name="bonuses"]').addEventListener('input', calculateNetSalary);
+    employeeSelect.addEventListener('change', function () {
+        let selectedOption = this.options[this.selectedIndex];
+        let salary = selectedOption.getAttribute('data-salary') || 0;
+
+        salaryInput.value = salary;
+        calculatePreview();
+    });
+
+    bonusInput.addEventListener('input', calculatePreview);
+
+});
 </script>
 
 @endsection

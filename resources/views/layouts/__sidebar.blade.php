@@ -61,31 +61,47 @@
                         </a>
                     </li>
 
+                    <li class="sidebar-item {{ request()->routeIs('employees.*', 'departments.*', 'roles.*', 'employee-schedules.*') ? 'active' : '' }}">
+                        <a href="#dataMaster" class="sidebar-link collapsed" data-bs-toggle="collapse">
+                            <i class="bi bi-database"></i>
+                            <span>Data Master</span>
+                            <i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul class="collapse list-unstyled ps-3 {{ request()->routeIs('employees.*', 'departments.*', 'roles.*', 'employee-schedules.*') ? 'show' : '' }}" id="dataMaster">
+                            <li class="sidebar-item {{ request()->routeIs('employees.index') ? 'active' : '' }}">
+                                <a href="{{ route('employees.index') }}" class="sidebar-link">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>Employees</span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item {{ request()->routeIs('departments.index') ? 'active' : '' }}">
+                                <a href="{{ route('departments.index') }}" class="sidebar-link">
+                                    <i class="bi bi-briefcase"></i>
+                                    <span>Departements</span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item {{ request()->routeIs('roles.index') ? 'active' : '' }}">
+                                <a href="{{ route('roles.index') }}" class="sidebar-link">
+                                    <i class="bi bi-tag"></i>
+                                    <span>Roles</span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item {{ request()->routeIs('employee-schedules.*') ? 'active' : '' }}">
+                                <a href="{{ route('employee-schedules.index') }}" class="sidebar-link">
+                                    <i class="bi bi-clock"></i>
+                                    <span>Employee Schedule</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                     <li class="sidebar-item {{ request()->routeIs('tasks.index')  ? 'active' : '' }}">
                         <a href="{{ route('tasks.index') }}" class="sidebar-link">
                             <i class="bi bi-check-circle-fill"></i>
                             <span>Task</span>
-                        </a>
-                    </li>
-                    
-                    <li class="sidebar-item {{ request()->routeIs('employees.index') ? 'active' : '' }}">
-                        <a href="{{ route('employees.index') }}" class="sidebar-link">
-                            <i class="bi bi-people-fill"></i>
-                            <span>Employees</span>
-                        </a>
-                    </li>
-                    
-                    <li class="sidebar-item {{ request()->routeIs('departments.index') ? 'active' : '' }}  ? 'active' : '' }}">
-                        <a href="{{ route('departments.index') }}" class="sidebar-link">
-                            <i class="bi bi-briefcase"></i>
-                            <span>Departements</span>
-                        </a>
-                    </li>
-                    
-                    <li class="sidebar-item {{ request()->routeIs('roles.index') ? 'active' : '' }} ? 'active' : '' }}">
-                        <a href="{{ route('roles.index') }}" class="sidebar-link">
-                            <i class="bi bi-tag"></i>
-                            <span>Roles</span>
                         </a>
                     </li>
                     

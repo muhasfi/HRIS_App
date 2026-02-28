@@ -18,6 +18,10 @@ class Payroll extends Model
         'deductions',
         'net_salary',
         'pay_date',
+        'total_alpha',
+        'total_late_minutes',
+        'deduction_alpha',
+        'deduction_late'
     ];
 
     public function employee()

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
@@ -27,11 +28,18 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'title' => 'required | string | max:255',
+            'title' => [
+            'required',
+            'string',
+            'max:255',
+                Rule ::unique(Task::class, 'title')
+            ],
             'description' => 'nullable | string',
             'assigned_to' => 'required',
             'due_date'=> 'required | date',
             'status' => 'required | string'
+        ], [
+            'title.unique' => 'Tugas Sudah Ada'
         ]);
 
         Task::create($validate);

@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------
@@ -98,6 +98,9 @@ return [
     'cipher' => 'AES-256-CBC',
 
     'key' => env('APP_KEY'),
+
+    'work_start' => env('WORK_START', '08:00'),
+    'late_tolerance' => (int) env('LATE_TOLERANCE', 15),
 
     'previous_keys' => [
         ...array_filter(

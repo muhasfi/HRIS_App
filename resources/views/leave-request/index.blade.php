@@ -67,16 +67,18 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if ($leaveRequest->status == 'pending')
-                                        <a href="{{ route('leave-requests.confirm', $leaveRequest->id) }}" class="btn btn-success btn-sm">Confirm</a>
-                                        <a href="{{ route('leave-requests.reject', $leaveRequest->id) }}" class="btn btn-warning btn-sm">Reject</a>
+                                    @if (session('role') == 'HR')
+                                        @if ($leaveRequest->status == 'pending')
+                                            <a href="{{ route('leave-requests.confirm', $leaveRequest->id) }}" class="btn btn-success btn-sm">Confirm</a>
+                                            <a href="{{ route('leave-requests.reject', $leaveRequest->id) }}" class="btn btn-warning btn-sm">Reject</a>
 
-                                    @elseif ($leaveRequest->status == 'reject')
-                                        <a href="{{ route('leave-requests.confirm', $leaveRequest->id) }}" class="btn btn-success btn-sm">Confirm</a>
+                                        @elseif ($leaveRequest->status == 'reject')
+                                            <a href="{{ route('leave-requests.confirm', $leaveRequest->id) }}" class="btn btn-success btn-sm">Confirm</a>
 
-                                    @elseif ($leaveRequest->status == 'confirm')
-                                        <a href="{{ route('leave-requests.reject', $leaveRequest->id) }}" class="btn btn-warning btn-sm">Reject</a>
+                                        @elseif ($leaveRequest->status == 'confirm')
+                                            <a href="{{ route('leave-requests.reject', $leaveRequest->id) }}" class="btn btn-warning btn-sm">Reject</a>
 
+                                        @endif
                                     @endif
 
 

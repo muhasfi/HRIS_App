@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\EmployeeSchedule;
 use App\Models\Presence;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,7 +24,6 @@ class PresenceController extends Controller
 
             $employeeId = session('employee_id');
             $today = Carbon::today()->toDateString();
-            // $today = Carbon::today()->addDay()->toDateString();
 
             $presences = Presence::where('employee_id', $employeeId)->get();
 
@@ -31,7 +31,12 @@ class PresenceController extends Controller
                 ->where('date', $today)
                 ->first();
 
-            return view('presence.index', compact('presences', 'todayPresence'));
+            $dayOfWeek = now()->dayOfWeek;
+            $hasSchedule = EmployeeSchedule::where('employee_id', $employeeId)
+                ->where('day_of_week', $dayOfWeek)
+                ->exists();
+
+            return view('presence.index', compact('presences', 'todayPresence', 'hasSchedule'));
         }
     }
 
@@ -49,6 +54,10 @@ class PresenceController extends Controller
      */
     public function store(Request $request)
     {
+        // dd(session()->all());
+        // =========================================
+        // HR INPUT MANUAL
+        // =========================================
         if (session('role') == 'HR') {
 
             $request->validate([
@@ -63,60 +72,93 @@ class PresenceController extends Controller
 
             return redirect()->route('presences.index')
                 ->with('success', 'Presence Created');
-
-        } else {
-
-            $employeeId = session('employee_id');
-            $today = Carbon::today();
-            // $today = Carbon::today()->addDay();
-
-            $presence = Presence::where('employee_id', $employeeId)
-                ->whereDate('date', $today)
-                ->first();
-            // $presence = Presence::where('employee_id', $employeeId)
-            //     ->where('date', $today->toDateString())
-            //     ->first();
-
-            // =======================
-            // CHECK IN
-            // =======================
-            if (!$presence) {
-
-                Presence::create([
-                    'employee_id' => $employeeId,
-                    'date' => $today,
-                    // 'date' => $today->toDateString(),
-                    'check_in' => Carbon::now(),
-                    'status' => 'present',
-                    'check_in_lat' => $request->check_in_lat,
-                    'check_in_long' => $request->check_in_long,
-                ]);
-
-                return redirect()->route('presences.index')
-                    ->with('success', 'Check-in berhasil');
-            }
-
-            // =======================
-            // CHECK OUT
-            // =======================
-            if (!$presence->check_out) {
-
-                $presence->update([
-                    'check_out' => Carbon::now(),
-                    'check_out_lat' => $request->check_in_lat,   // ambil dari input yang sama
-                    'check_out_long' => $request->check_in_long,
-                ]);
-
-                return redirect()->route('presences.index')
-                    ->with('success', 'Check-out berhasil');
-            }
-
-            // =======================
-            // SUDAH SELESAI
-            // =======================
-            return redirect()->route('presences.index')
-                ->with('error', 'Kamu sudah check-in dan check-out hari ini');
         }
+
+        // =========================================
+        // EMPLOYEE CHECK-IN / CHECK-OUT
+        // =========================================
+
+        $employeeId = session('employee_id');
+        $today = Carbon::today();
+        $now = Carbon::now();
+        $dayOfWeek = $now->dayOfWeek; // 0-6
+
+        // Cari presence hari ini
+        $presence = Presence::where('employee_id', $employeeId)
+            ->whereDate('date', $today)
+            ->first();
+
+        // Cari schedule hari ini
+        $schedule = EmployeeSchedule::where('employee_id', $employeeId)
+            ->where('day_of_week', $dayOfWeek)
+            ->first();
+            
+
+        if (!$schedule) {
+            return redirect()->route('presences.index')
+                ->with('error', 'Tidak ada jadwal shift hari ini');
+        }
+
+        // =======================
+        // HITUNG STATUS
+        // =======================
+       
+        $startTime = Carbon::parse($schedule->start_time);
+
+        $status = $now->greaterThan($startTime) ? 'late' : 'present';
+
+        // =======================
+        // CHECK IN
+        // =======================
+        if (!$presence) {
+
+            $checkIn = $now;
+            $workStart = Carbon::parse($schedule->start_time);
+
+            $lateMinutes = 0;
+            $status = 'present';
+
+            if ($checkIn->gt($workStart)) {
+                $lateMinutes = (int) $workStart->diffInMinutes($checkIn);
+                $status = 'late';
+            }
+
+            Presence::create([
+                'employee_id' => $employeeId,
+                'date' => $today->toDateString(),
+                'check_in' => $checkIn,
+                'status' => $status,
+                'late_minutes' => $lateMinutes,
+                'check_in_lat' => $request->check_in_lat,
+                'check_in_long' => $request->check_in_long,
+            ]);
+
+            return redirect()->route('presences.index')
+                ->with('success', 'Check-in berhasil');
+        }
+
+        // =======================
+        // CHECK OUT
+        // =======================
+        if (!$presence->check_out) {
+
+            $presence->update([
+                'check_out' => $now,
+                'check_out_lat' => $request->check_in_lat,
+                'check_out_long' => $request->check_in_long,
+            ]);
+
+            return redirect()->route('presences.index')
+                ->with('success', 'Check-out berhasil');
+        }
+
+        
+
+        // =======================
+        // SUDAH SELESAI
+        // =======================
+        return redirect()->route('presences.index')
+            ->with('error', 'Kamu sudah check-in dan check-out hari ini');
     }
 
     /**

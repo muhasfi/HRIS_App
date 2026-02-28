@@ -83,8 +83,10 @@
                         <label for="status" class="form-label">Status</label>
                         <select name="status" id="status" class="form-control">
                             <option value="present" {{ ($presence->status == 'present') ? 'selected' : '' }}>Present</option>
+                            <option value="late" {{ ($presence->status == 'late') ? 'selected' : '' }}>Late</option>
                             <option value="absen" {{ ($presence->status == 'absen') ? 'selected' : '' }}>Absen</option>
-                            <option value="leave" {{ ($presence->status == 'leave') ? 'selected' : '' }}>Leave</option>
+                            <option value="ijin" {{ ($presence->status == 'ijin') ? 'selected' : '' }}>Ijin</option>
+                            <option value="cuti" {{ ($presence->status == 'cuti') ? 'selected' : '' }}>Cuti</option>
                         </select>
                         @error('status')
                             <div class="invalid-feedback">{{ $message }}</div>

@@ -67,23 +67,12 @@
                 </div>
     
                 <a href="{{ route('payrolls.index') }}" class="btn btn-secondary">Back to Payroll List</a>
-                <button type="button" id="btn-print" class="btn btn-primary"><span class="bi bi-printer"></span> Print</button>
+                <a href="{{ route('payrolls.slip', $payroll->id) }}" class="btn btn-primary" target="_blank">
+                <span class="bi bi-printer"></span> Print Slip
+                </a>
             </div>
         </div>
     </section>
 </div>
-
-<script>
-    document.getElementById('btn-print').addEventListener('click', function(){
-        let printContent = document.getElementById('print-area').innerHTML;
-        let originalContent = document.body.innerHTML;
-
-        document.body.innerHTML = printContent;
-
-        window.print();
-
-        document.body.innerHTML = originalContent;
-    })
-</script>
 
 @endsection
