@@ -5,12 +5,17 @@
         "api/index.php": { "runtime": "vercel-php@0.6.0" }
     },
     "routes": [
-        { "src": "/build/(.*)", "dest": "/public/build/" },
-        { "src": "/(.*)", "dest": "/api/index.php" }
+        {
+            "src": "/img/(.*)",
+            "dest": "/public/img/"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
     ],
     "public": true,
     "buildCommand": "vite build",
-    "outputDirectory": "public",
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
@@ -30,5 +35,6 @@
         "DB_PORT": "5434",
         "DB_DATABASE": "hris_app_preventhe",
         "DB_USERNAME": "hris_app_preventhe"
-    }
+    },
+    "outputDirectory": "public"
 }
