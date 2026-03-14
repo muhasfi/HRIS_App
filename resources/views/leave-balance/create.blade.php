@@ -48,18 +48,13 @@
                     </div>
                 @endif
                 
-                <form action="{{ route('leave-requests.store') }}" method="POST">
+                <form action="{{ route('leave-balances.store') }}" method="POST">
                    @csrf
-        
-                    @if(session('role') === 'HR')
                     <div class="mb-3">
                         <label for="employee_id" class="form-label">Employee</label>
-
                         <select name="employee_id" id="employee_id"
                             class="form-control @error('employee_id') is-invalid @enderror">
-
                             <option value="" selected disabled>-- Select Employee --</option>
-
                             @foreach($employees as $employee)
                                 <option value="{{ $employee->id }}">
                                     {{ $employee->fullname }}
@@ -67,25 +62,10 @@
                             @endforeach
 
                         </select>
-
                         @error('employee_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    @else
-                    <div class="mb-3">
-                        <label class="form-label">Employee</label>
-
-                        <input type="text"
-                            class="form-control"
-                            value="{{ auth()->user()->employee->fullname }}"
-                            readonly>
-
-                        <input type="hidden"
-                            name="employee_id"
-                            value="{{ auth()->user()->employee->id }}">
-                    </div>
-                    @endif
         
                     <div class="mb-3">
                         <label for="leave_type_id" class="form-label">Leave Type</label>
@@ -103,23 +83,34 @@
                     </div>
         
                     <div class="mb-3">
-                        <label for="start_date" class="form-label">Start Date</label>
-                        <input type="text" class="form-control date @error('start_date') is-invalid @enderror" name="start_date" value="{{ old('start_date') }}" required>
-                        @error('start_date')
+                        <label for="year" class="form-label">Year</label>
+                        <input type="text" 
+                            class="form-control @error('year') is-invalid @enderror" 
+                            name="year" 
+                            id="year"
+                            value="{{ old('year', date('Y')) }}" 
+                            required>
+                        @error('year')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-        
+
                     <div class="mb-3">
-                        <label for="end_date" class="form-label">End Date</label>
-                        <input type="text" class="form-control date @error('end_date') is-invalid @enderror" name="end_date" value="{{ old('end_date') }}" required>
-                        @error('end_date')
+                        <label for="total_days" class="form-label">Total Days</label>
+                        <input type="number" 
+                            class="form-control @error('total_days') is-invalid @enderror" 
+                            name="total_days" 
+                            id="total_days"
+                            value="{{ old('total_days') }}" 
+                            min="0"
+                            required>
+                        @error('total_days')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
         
                     <button type="submit" class="btn btn-primary">Create Leave Request</button>
-                    <a href="{{ route('leave-requests.index') }}" class="btn btn-secondary">Back to Leave Request List</a>
+                    <a href="{{ route('leave-balances.index') }}" class="btn btn-secondary">Back to Leave Request List</a>
 
                 </form>
             </div>

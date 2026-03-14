@@ -13,14 +13,42 @@ class LeaveRequest extends Model
 
     protected $fillable = [
         'employee_id',
-        'leave_type',
+        'leave_type_id',
         'start_date',
         'end_date',
         'status',
+        'total_days',
+        'reason',
+        'approved_by',
+        'approved_at',
+        'rejected_reason'
+    ];
+
+    protected $dates = [
+        'start_date',
+        'end_date',
+        'approved_at'
     ];
 
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function leaveType()
+    {
+        return $this->belongsTo(LeaveType::class);
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(Employee::class, 'approved_by');
+    }
+
+    public function leaveBalance()
+    {
+        return $this->hasOne(LeaveBalance::class, 'employee_id', 'employee_id')
+            ->where('leave_type_id', $this->leave_type_id)
+            ->where('year', now()->year);
     }
 }

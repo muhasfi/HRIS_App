@@ -146,15 +146,60 @@ return new class extends Migration
         //           ->constrained('master.employees')
         //           ->cascadeOnDelete();
 
-        //     $table->string('leave_type');
+        //     $table->foreignId('leave_type_id')->nullable()->constrained('transactions.leave_type')->cascadeOnDelete();
         //     $table->date('start_date');
         //     $table->date('end_date');
-        //     $table->string('status');
-        //     $table->text('reason')->nullable();
+        
+        //      $table->integer('total_days')->nullable();
+        
+        //      $table->unsignedBigInteger('approved_by')
+        //             ->nullable();
+
+        //      $table->timestamp('approved_at')
+        //         ->nullable();
+
+        //      $table->text('rejected_reason')
+        //         ->nullable();
+
+        //      $table->foreign('approved_by')
+        //         ->references('id')
+        //         ->on('master.employees')
+        //         ->nullOnDelete();
+
+        //      $table->string('status');
+        //      $table->text('reason')->nullable();
+
+
+            
 
         //     $table->timestamps();
         //     $table->softDeletes();
         // });
+
+        // Schema::create('transactions.leave_types', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name');
+        //     $table->integer('max_days')->nullable(); 
+        //     $table->boolean('is_paid')->default(true);
+        //     $table->timestamps();
+        // });
+
+        // Schema::create('transactions.leave_balances', function (Blueprint $table) {
+        //     $table->id();
+
+        //     $table->foreignId('employee_id')->constrained('master.employees')->cascadeOnDelete();
+
+        //     $table->foreignId('leave_type_id')->constrained('transactions.leave_types')->cascadeOnDelete();
+
+        //     $table->year('year');
+
+        //     $table->integer('total_days');
+        //     $table->integer('used_days')->default(0);
+        //     $table->integer('remaining_days');
+
+        //     $table->timestamps();
+        // });
+    
 
         
     }
@@ -167,6 +212,8 @@ return new class extends Migration
         // Schema::dropIfExists('transactions.presences');
         // Schema::dropIfExists('transactions.payrolls');
         // Schema::dropIfExists('transactions.tasks');
+        // Schema::dropIfExists('transactions.leave_types');
+        // Schema::dropIfExists('transactions.leave_balances');
 
         // Schema::dropIfExists('master.employees');
         // Schema::dropIfExists('master.roles');

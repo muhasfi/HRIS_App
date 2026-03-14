@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Create Leave Request')
+@section('title', 'Edit Leave Request')
 
 @section('content')
 
@@ -16,7 +16,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('leave-requests.index') }}">Leave Request</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">New</li>
+                        <li class="breadcrumb-item active" aria-current="page">Edit</li>
                     </ol>
                 </nav>
             </div>
@@ -48,63 +48,39 @@
                     </div>
                 @endif
                 
-                <form action="{{ route('leave-requests.store') }}" method="POST">
+                <form action="{{ route('leave-requests.update', $leaveRequest->id) }}" method="POST">
                    @csrf
+                   @method('PUT')
         
-                    @if(session('role') === 'HR')
                     <div class="mb-3">
                         <label for="employee_id" class="form-label">Employee</label>
-
-                        <select name="employee_id" id="employee_id"
-                            class="form-control @error('employee_id') is-invalid @enderror">
-
+                        <select name="employee_id" id="employee_id" class="form-control">
                             <option value="" selected disabled>-- Select Employee --</option>
-
                             @foreach($employees as $employee)
-                                <option value="{{ $employee->id }}">
-                                    {{ $employee->fullname }}
-                                </option>
+                                <option value="{{ $employee->id }}" @if(old('employee_id', $leaveRequest->employee_id) == $employee->id) selected @endif>{{ $employee->fullname }}</option>
                             @endforeach
-
                         </select>
-
                         @error('employee_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    @else
-                    <div class="mb-3">
-                        <label class="form-label">Employee</label>
-
-                        <input type="text"
-                            class="form-control"
-                            value="{{ auth()->user()->employee->fullname }}"
-                            readonly>
-
-                        <input type="hidden"
-                            name="employee_id"
-                            value="{{ auth()->user()->employee->id }}">
-                    </div>
-                    @endif
         
                     <div class="mb-3">
-                        <label for="leave_type_id" class="form-label">Leave Type</label>
-                        <select name="leave_type_id" id="leave_type_id" class="form-control">
+                        <label for="leave_type" class="form-label">Leave Type</label>
+                        <select name="leave_type" id="leave_type" class="form-control">
                             <option value="" selected disabled>-- Select Leave Type --</option>
-                            @foreach($leaveTypes as $type)
-                                <option value="{{ $type->id }}">
-                                    {{ $type->name }}
-                                </option>
-                            @endforeach
+                            <option value="Sick Leave" {{ $leaveRequest->leave_type == 'Sick Leave' ? 'selected' : '' }}>Sick Leave</option>
+                            <option value="Vacation" {{ $leaveRequest->leave_type == 'Vacation' ? 'selected' : '' }}>Vacation</option>
+                            <option value="Birth Leave" {{ $leaveRequest->leave_type == 'Birth Leave' ? 'selected' : '' }}>Birth Leave</option>
                         </select>
-                        @error('leave_type_id')
+                        @error('leave_type')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
         
                     <div class="mb-3">
                         <label for="start_date" class="form-label">Start Date</label>
-                        <input type="text" class="form-control date @error('start_date') is-invalid @enderror" name="start_date" value="{{ old('start_date') }}" required>
+                        <input type="text" class="form-control date @error('start_date') is-invalid @enderror" name="start_date" value="{{ old('start_date', $leaveRequest->start_date) }}" required>
                         @error('start_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -112,13 +88,13 @@
         
                     <div class="mb-3">
                         <label for="end_date" class="form-label">End Date</label>
-                        <input type="text" class="form-control date @error('end_date') is-invalid @enderror" name="end_date" value="{{ old('end_date') }}" required>
+                        <input type="text" class="form-control date @error('end_date') is-invalid @enderror" name="end_date" value="{{ old('end_date',  $leaveRequest->end_date) }}" required>
                         @error('end_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
         
-                    <button type="submit" class="btn btn-primary">Create Leave Request</button>
+                    <button type="submit" class="btn btn-primary">Update Leave Request</button>
                     <a href="{{ route('leave-requests.index') }}" class="btn btn-secondary">Back to Leave Request List</a>
 
                 </form>
