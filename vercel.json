@@ -29,7 +29,6 @@
         "DB_HOST": "24hbg7.h.filess.io",
         "DB_PORT": "5434",
         "DB_DATABASE": "hris_app_preventhe",
-        "DB_USERNAME": "hris_app_preventhe",
-        "DB_PASSWORD": "4bcf3e7b097e66f71c5e14bae71ac22d7ddb6170"
+        "DB_USERNAME": "hris_app_preventhe"
     }
 }
