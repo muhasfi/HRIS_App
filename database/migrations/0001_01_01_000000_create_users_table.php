@@ -35,6 +35,12 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+        
+         Schema::create('migrations', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('migration', 255);
+            $table->integer('batch');
+        });
     }
 
     /**

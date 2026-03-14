@@ -9,20 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::table('transactions.leave_requests', function (Blueprint $table) {
-            $table->foreignId('leave_type_id')->nullable()->constrained('transactions.leave_types')->cascadeOnDelete();
-        });
-    }
+    // public function up(): void
+    // {
+    //     Schema::table('transactions.leave_requests', function (Blueprint $table) {
+    //         $table->foreignId('leave_type_id')->nullable()->constrained('transactions.leave_types')->cascadeOnDelete();
+    //     });
+    // }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('leave_requests', function (Blueprint $table) {
-            //
-        });
-    }
+    // /**
+    //  * Reverse the migrations.
+    //  */
+    // public function down(): void
+    // {
+    //     Schema::table('leave_requests', function (Blueprint $table) {
+    //         //
+    //     });
+    // }
 };

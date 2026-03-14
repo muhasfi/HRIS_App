@@ -24,8 +24,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        Schema::dropIfExists('employee_schedules');
-    }
+    // public function down(): void
+    // {
+    //     Schema::dropIfExists('employee_schedules');
+    // }
 };

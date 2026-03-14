@@ -9,30 +9,30 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('transactions.leave_balances', function (Blueprint $table) {
-            $table->id();
+    // public function up(): void
+    // {
+    //     Schema::create('transactions.leave_balances', function (Blueprint $table) {
+    //         $table->id();
 
-            $table->foreignId('employee_id')->constrained('master.employees')->cascadeOnDelete();
+    //         $table->foreignId('employee_id')->constrained('master.employees')->cascadeOnDelete();
 
-            $table->foreignId('leave_type_id')->constrained('transactions.leave_types')->cascadeOnDelete();
+    //         $table->foreignId('leave_type_id')->constrained('transactions.leave_types')->cascadeOnDelete();
 
-            $table->year('year');
+    //         $table->year('year');
 
-            $table->integer('total_days');
-            $table->integer('used_days')->default(0);
-            $table->integer('remaining_days');
+    //         $table->integer('total_days');
+    //         $table->integer('used_days')->default(0);
+    //         $table->integer('remaining_days');
 
-            $table->timestamps();
-        });
-    }
+    //         $table->timestamps();
+    //     });
+    // }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('leave_balances');
-    }
+    // /**
+    //  * Reverse the migrations.
+    //  */
+    // public function down(): void
+    // {
+    //     Schema::dropIfExists('leave_balances');
+    // }
 };

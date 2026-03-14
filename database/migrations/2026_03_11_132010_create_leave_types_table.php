@@ -9,22 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('transactions.leave_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->integer('max_days')->nullable(); 
-            $table->boolean('is_paid')->default(true);
-            $table->timestamps();
-        });
-    }
+    // public function up(): void
+    // {
+    //     Schema::create('transactions.leave_types', function (Blueprint $table) {
+    //         $table->id();
+    //         $table->string('name');
+    //         $table->integer('max_days')->nullable(); 
+    //         $table->boolean('is_paid')->default(true);
+    //         $table->timestamps();
+    //     });
+    // }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('leave_types');
-    }
+    // /**
+    //  * Reverse the migrations.
+    //  */
+    // public function down(): void
+    // {
+    //     Schema::dropIfExists('leave_types');
+    // }
 };
