@@ -149,6 +149,7 @@
                             class="form-control @error('password') is-invalid @enderror" 
                             name="password"
                             placeholder="Kosongkan jika tidak ingin mengubah password"
+                            autocomplete="new-password"
                         >
                         
                         @error('password')
@@ -163,6 +164,7 @@
                             class="form-control" 
                             name="password_confirmation"
                             placeholder="Ulangi password baru"
+                            autocomplete="new-password"
                         >
                     </div>
         

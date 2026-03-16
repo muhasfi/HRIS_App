@@ -98,6 +98,41 @@
                         </ul>
                     </li>
 
+                    <li class="sidebar-item {{ request()->routeIs('leave-requests.*') || request()->routeIs('leave-balances.*') || request()->routeIs('leave-types.*') ? 'active' : '' }}">
+                        <a href="#leavesSubmenu" class="sidebar-link collapsed" data-bs-toggle="collapse">
+                            <i class="bi bi-calendar2-week-fill"></i>
+                            <span>Leaves</span>
+                            <i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul class="collapse list-unstyled ps-3 {{ request()->routeIs('leave-requests.*') || request()->routeIs('leave-balances.*') || request()->routeIs('leave-types.*') ? 'show' : '' }}" id="leavesSubmenu">
+                            <li class="sidebar-item {{ request()->routeIs('leave-requests.*') ? 'active' : '' }}">
+                                <a href="{{ route('leave-requests.index') }}" class="sidebar-link">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                    <span>Leave Requests</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item {{ request()->routeIs('leave-balances.*') ? 'active' : '' }}">
+                                <a href="{{ route('leave-balances.index') }}" class="sidebar-link">
+                                    <i class="bi bi-wallet2"></i>
+                                    <span>Leave Balance</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item {{ request()->routeIs('leave-types.*') ? 'active' : '' }}">
+                                <a href="{{ route('leave-types.index') }}" class="sidebar-link">
+                                    <i class="bi bi-tag-fill"></i>
+                                    <span>Leave Type</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="sidebar-item {{ request()->routeIs('presences.index') ? 'active' : '' }} ? 'active' : '' }}">
+                        <a href="{{ route('presences.index') }}" class="sidebar-link">
+                            <i class="bi bi-table"></i>
+                            <span>Presences</span>
+                        </a>
+                    </li>
+
                     <li class="sidebar-item {{ request()->routeIs('tasks.index')  ? 'active' : '' }}">
                         <a href="{{ route('tasks.index') }}" class="sidebar-link">
                             <i class="bi bi-check-circle-fill"></i>
@@ -105,24 +140,10 @@
                         </a>
                     </li>
                     
-                    <li class="sidebar-item {{ request()->routeIs('presences.index') ? 'active' : '' }} ? 'active' : '' }}">
-                        <a href="{{ route('presences.index') }}" class="sidebar-link">
-                            <i class="bi bi-table"></i>
-                            <span>Presences</span>
-                        </a>
-                    </li>
-                    
                     <li class="sidebar-item {{ request()->routeIs('payrolls.index') ? 'active' : '' }} ? 'active' : '' }}">
                         <a href="{{ route('payrolls.index') }}" class="sidebar-link">
                             <i class="bi bi-currency-dollar"></i>
                             <span>Payrolls</span>
-                        </a>
-                    </li>
-                    
-                    <li class="sidebar-item {{ request()->routeIs('leave-requests.index') ? 'active' : '' }} ? 'active' : '' }}">
-                        <a href="{{ route('leave-requests.index') }}" class="sidebar-link">
-                            <i class="bi bi-shift-fill"></i>
-                            <span>Leaves Requests</span>
                         </a>
                     </li>
                     @endif

@@ -28,13 +28,28 @@
             
             <div class="card-body">
 
-                @if (session('success'))
+                {{-- SUCCESS --}}
+                @if(session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
                     </div>
-                @elseif(session('error'))
+                @endif
+
+                {{-- ERROR --}}
+                @if(session('error'))
                     <div class="alert alert-danger">
                         {{ session('error') }}
+                    </div>
+                @endif
+
+                {{-- VALIDATION ERROR --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 @endif
                 
@@ -102,7 +117,7 @@
                     <form action="{{ route('presences.store') }}" method="POST">
                         @csrf
 
-                        <div class="mb-3"><b>Note</b> : Mohon izinkan akses lokasi</div>
+                        <div class="mb-3"><b>Note</b> : Mohon izinkan akses lokasi & kamera</div>
 
                         <div class="mb-3">
                             <label for="check_in_lat" class="form-label">Latitude</label>
@@ -118,7 +133,24 @@
                             <iframe width="500" height="300" src="" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
                         </div>
 
-                        <button type="submit" class="btn btn-primary" id="btn-present">Presence</button>
+                        <div class="mb-3">
+                            <label class="form-label">Foto Selfie</label>
+                            <div>
+                                <video id="camera-stream" width="320" height="240" autoplay style="border:1px solid #ccc; border-radius:8px;"></video>
+                                <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+                            </div>
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-info" id="btn-capture">📷 Ambil Foto</button>
+                                <button type="button" class="btn btn-warning" id="btn-retake" style="display:none;">🔄 Ulangi</button>
+                            </div>
+                            <div class="mt-2">
+                                <img id="photo-preview" src="" alt="Preview" style="display:none; width:320px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            {{-- Foto disimpan sebagai base64 --}}
+                            <input type="hidden" name="photo_check_in" id="photo-input">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="btn-present" disabled>Presence</button>
 
                     </form>
 
@@ -130,43 +162,99 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
 
-        const iframe = document.querySelector('iframe');
+    const iframe = document.querySelector('iframe');
+    const officeLat = -7.570312354872347;
+    const officeLon = 110.80334127983431;
+    const threshold = 0.01;
 
-        const officeLat = -7.570312354872347;
-        const officeLon = 110.80334127983431;
-        const threshold = 0.01;
+    let locationValid = false;
+    let photoTaken = false;
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-
-                // tampilkan lokasi user di maps
-                iframe.src = `https://www.google.com/maps?q=${lat},${lon}&output=embed`;
-
-                // isi input
-                document.getElementById('check_in_lat').value = lat;
-                document.getElementById('check_in_long').value = lon;
-
-                // hitung jarak sederhana
-                const distance = Math.sqrt(
-                    Math.pow(lat - officeLat, 2) +
-                    Math.pow(lon - officeLon, 2)
-                );
-
-                if (distance <= threshold) {
-                    alert('Kamu berada di kantor');
-                    document.getElementById('btn-present').removeAttribute('disabled');
-                } else {
-                    alert('Kamu tidak berada di kantor');
-                }
-            });
+    function checkReady() {
+        if (locationValid && photoTaken) {
+            document.getElementById('btn-present').removeAttribute('disabled');
         }
+    }
 
+    // === GEOLOCATION ===
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            iframe.src = `https://www.google.com/maps?q=${lat},${lon}&output=embed`;
+            document.getElementById('check_in_lat').value = lat;
+            document.getElementById('check_in_long').value = lon;
+
+            const distance = Math.sqrt(
+                Math.pow(lat - officeLat, 2) +
+                Math.pow(lon - officeLon, 2)
+            );
+
+            if (distance <= threshold) {
+                alert('Kamu berada di kantor');
+                locationValid = true;
+                checkReady();
+            } else {
+                alert('Kamu tidak berada di kantor');
+            }
+        });
+    }
+
+    // === KAMERA ===
+    const video = document.getElementById('camera-stream');
+    const canvas = document.getElementById('canvas');
+    const btnCapture = document.getElementById('btn-capture');
+    const btnRetake = document.getElementById('btn-retake');
+    const photoPreview = document.getElementById('photo-preview');
+    const photoInput = document.getElementById('photo-input');
+
+    // Nyalakan kamera
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+            .then(function(stream) {
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                alert('Tidak bisa mengakses kamera: ' + err.message);
+            });
+    }
+
+    // Ambil foto
+    btnCapture.addEventListener('click', function () {
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataURL = canvas.toDataURL('image/jpeg');
+
+        photoInput.value = dataURL;
+        photoPreview.src = dataURL;
+        photoPreview.style.display = 'block';
+
+        video.style.display = 'none';
+        btnCapture.style.display = 'none';
+        btnRetake.style.display = 'inline-block';
+
+        photoTaken = true;
+        checkReady();
     });
+
+    // Ulangi foto
+    btnRetake.addEventListener('click', function () {
+        photoInput.value = '';
+        photoPreview.src = '';
+        photoPreview.style.display = 'none';
+
+        video.style.display = 'block';
+        btnCapture.style.display = 'inline-block';
+        btnRetake.style.display = 'none';
+
+        photoTaken = false;
+        document.getElementById('btn-present').setAttribute('disabled', true);
+    });
+
+});
 </script>
 
 

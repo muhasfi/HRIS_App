@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeScheduleController;
 use App\Http\Controllers\LeaveBalanceController;
 use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\ProfileController;
@@ -48,8 +49,8 @@ Route::middleware('auth')->group(function () {
     
     //leave-requests
     Route::resource('leave-requests', LeaveRequestController::class)->middleware('role:HR,Developer,Sales Person');
-    
     Route::resource('leave-balances', LeaveBalanceController::class)->middleware('role:HR,Developer,Sales Person');
+    Route::resource('leave-types', LeaveTypeController::class)->middleware('role:HR,Developer,Sales Person');
 
     Route::get('/leave-requests/confirm/{id}',[LeaveRequestController::class,'confirm'])->name('leave-requests.confirm')->middleware('role:HR');
     Route::get('/leave-requests/reject/{id}', [LeaveRequestController::class,'reject'])->name('leave-requests.reject')->middleware('role:HR');

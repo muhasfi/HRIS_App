@@ -17,7 +17,7 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         // Pastikan user punya employee
         if (!$user->employee) {

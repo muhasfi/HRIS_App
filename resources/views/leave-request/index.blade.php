@@ -33,9 +33,13 @@
                     {{-- @endif --}}
                 </div>
 
-                @if(session('success'))
+               @if (session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
+                    </div>
+                @elseif(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
                     </div>
                 @endif
 
@@ -81,8 +85,9 @@
                                         @endif
                                     @endif
 
-
+                                    @if (session('role') != 'HR')
                                     <a href="{{ route('leave-requests.edit', $leaveRequest->id) }}"class="btn btn-info btn-sm">Edit</a>
+                                    @endif
 
                                     <form action="{{ route('leave-requests.destroy', $leaveRequest->id) }}" method="POST" style="display: inline">
                                         @csrf

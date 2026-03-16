@@ -7,6 +7,7 @@ use App\Models\EmployeeSchedule;
 use App\Models\Presence;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PresenceController extends Controller
 {
@@ -123,6 +124,22 @@ class PresenceController extends Controller
                 $status = 'late';
             }
 
+            $request->validate([
+                'check_in_lat'   => 'required',
+                'check_in_long'  => 'required',
+                'photo_check_in' => 'required|starts_with:data:image',
+            ]);
+
+            $photo = null;
+
+            if ($request->photo_check_in) {
+                $imageData = base64_decode(str_replace('data:image/jpeg;base64,', '', $request->photo_check_in));
+                $filename = 'presences/checkin_' . uniqid() . '.jpg';
+                Storage::disk('public')->put($filename, $imageData);
+
+                $photo = $filename;
+            }
+
             Presence::create([
                 'employee_id' => $employeeId,
                 'date' => $today->toDateString(),
@@ -131,10 +148,10 @@ class PresenceController extends Controller
                 'late_minutes' => $lateMinutes,
                 'check_in_lat' => $request->check_in_lat,
                 'check_in_long' => $request->check_in_long,
+                'photo_check_in' => $photo
             ]);
-
-            return redirect()->route('presences.index')
-                ->with('success', 'Check-in berhasil');
+            
+            return redirect()->route('presences.index')->with('success', 'Check-in berhasil');
         }
 
         // =======================
@@ -142,11 +159,29 @@ class PresenceController extends Controller
         // =======================
         if (!$presence->check_out) {
 
+            $request->validate([
+                'check_in_lat'   => 'required',
+                'check_in_long'  => 'required',
+                'photo_check_in' => 'required|starts_with:data:image',
+            ]);
+
+            $photo = null;
+
+            if ($request->photo_check_in) {
+                $imageData = base64_decode(str_replace('data:image/jpeg;base64,', '', $request->photo_check_in));
+                $filename = 'presences/checkout_' . uniqid() . '.jpg';
+                Storage::disk('public')->put($filename, $imageData);
+
+                $photo = $filename;
+            }
+
             $presence->update([
                 'check_out' => $now,
                 'check_out_lat' => $request->check_in_lat,
                 'check_out_long' => $request->check_in_long,
+                'photo_check_out' => $photo
             ]);
+            
 
             return redirect()->route('presences.index')
                 ->with('success', 'Check-out berhasil');
@@ -164,9 +199,9 @@ class PresenceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Presence $presence)
     {
-        //
+        return view('presence.show', compact('presence'));
     }
 
     /**

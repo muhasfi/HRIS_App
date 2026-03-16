@@ -109,6 +109,7 @@
                                 @if (session('role') == 'HR')
                                 <td>
                                     <a href="{{ route('presences.edit', $presence->id) }}" class="btn btn-info btn-sm">Edit</a>
+                                    <a href="{{ route('presences.show', $presence->id) }}" class="btn btn-warning btn-sm">Show</a>
 
                                     <form action="{{ route('presences.destroy', $presence->id) }}" method="POST" style="display:inline">
                                         @csrf

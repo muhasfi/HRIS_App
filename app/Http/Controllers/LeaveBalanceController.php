@@ -15,7 +15,10 @@ class LeaveBalanceController extends Controller
      */
     public function index()
     {
-        $leaveBalances = LeaveBalance::with(['employee','leaveType'])->get();
+        $leaveBalances = LeaveBalance::with(['employee','leaveType'])
+        ->join('master.employees', 'transactions.leave_balances.employee_id', '=', 'employees.id')
+        ->orderBy('employees.fullname', 'asc')
+        ->get();
         return view('leave-balance.index', compact('leaveBalances'));
     }
 

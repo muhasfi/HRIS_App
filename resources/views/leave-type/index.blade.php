@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Leave Balance')
+@section('title', 'Leave Type')
 
 @section('content')
 
@@ -8,14 +8,14 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Leave Balance</h3>
-                <p class="text-subtitle text-muted">Manage Leave Balance data</p>
+                <h3>Leave Type</h3>
+                <p class="text-subtitle text-muted">Manage Leave Type data</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                        <li class="breadcrumb-item">Leave Balance</li>
+                        <li class="breadcrumb-item">Leave Type</li>
                         <li class="breadcrumb-item active" aria-current="page">Index</li>
                     </ol>
                 </nav>
@@ -29,7 +29,7 @@
             <div class="card-body">
                 <div class="d-flex">
                     @if (session('role') == 'HR')
-                        <a href="{{ route('leave-balances.create') }}" class="btn btn-primary mb-3 ms-auto">New Leave Balance</a>
+                        <a href="{{ route('leave-types.create') }}" class="btn btn-primary mb-3 ms-auto">New Leave Type</a>
                     @endif
                 </div>
 
@@ -42,32 +42,27 @@
                 <table class="table table-striped" id="table1">
                     <thead>
                         <tr>
-                            <th>Employee</th>
-                            <th>Leave Type</th>
-                            <th>Year</th>
-                            <th>Total Days</th>
-                            <th>Used Days</th>
-                            <th>Remaining Days</th>
+                            <th>Title</th>
+                            <th>Max Day</th>
+                            <th>Is Paid</th>
                             <th>Option</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($leaveBalances as $leaveBalance)
+                        @foreach($leaveTypes as $leaveType)
                             <tr>
-                                <td>{{ $leaveBalance->employee->fullname }}</td>
-                                <td>{{ $leaveBalance->leaveType->name }}</td>
-                                <td>{{ $leaveBalance->year }}</td>
-                                <td>{{ $leaveBalance->total_days }}</td>
-                                <td>{{ $leaveBalance->used_days }}</td>
-                                <td>{{ $leaveBalance->remaining_days }}</td>
+                                <td>{{ $leaveType->name }}</td>
+                                <td>{{ $leaveType->max_days }}</td>
+                                <td>{{ $leaveType->is_paid }}</td>
                                 <td>
-                                    <a href="{{ route('leave-balances.edit', $leaveBalance->id) }}"class="btn btn-info btn-sm">Edit</a>
-                                    <form action="{{ route('leave-balances.destroy', $leaveBalance->id) }}" method="POST" style="display: inline">
+                                    <a href="{{ route('leave-types.edit', $leaveType->id) }}"class="btn btn-info btn-sm">Edit</a>
+                                    <form action="{{ route('leave-types.destroy', $leaveType->id) }}" method="POST" style="display: inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin?')">Delete</button>
                                     </form>
                                 </td>
+                                
                             </tr>
                         @endforeach
                     </tbody>

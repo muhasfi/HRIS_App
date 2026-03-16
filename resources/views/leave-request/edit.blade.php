@@ -66,14 +66,20 @@
                     </div>
         
                     <div class="mb-3">
-                        <label for="leave_type" class="form-label">Leave Type</label>
-                        <select name="leave_type" id="leave_type" class="form-control">
-                            <option value="" selected disabled>-- Select Leave Type --</option>
-                            <option value="Sick Leave" {{ $leaveRequest->leave_type == 'Sick Leave' ? 'selected' : '' }}>Sick Leave</option>
-                            <option value="Vacation" {{ $leaveRequest->leave_type == 'Vacation' ? 'selected' : '' }}>Vacation</option>
-                            <option value="Birth Leave" {{ $leaveRequest->leave_type == 'Birth Leave' ? 'selected' : '' }}>Birth Leave</option>
+                        <label for="leave_type_id" class="form-label">Leave Type</label>
+
+                        <select name="leave_type_id" id="leave_type_id" class="form-control">
+                            <option value="" disabled>-- Select Leave Type --</option>
+
+                            @foreach($leaveTypes as $type)
+                                <option value="{{ $type->id }}"
+                                    {{ old('leave_type_id', $leaveRequest->leave_type_id) == $type->id ? 'selected' : '' }}>
+                                    {{ $type->name }}
+                                </option>
+                            @endforeach
                         </select>
-                        @error('leave_type')
+
+                        @error('leave_type_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

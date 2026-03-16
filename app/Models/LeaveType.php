@@ -13,10 +13,6 @@ class LeaveType extends Model
         'is_paid'
     ];
 
-    protected $casts = [
-        'is_paid' => 'boolean',
-    ];
-
     public function leaveRequests()
     {
         return $this->hasMany(LeaveRequest::class);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\LeaveBalance;
+use App\Models\LeaveType;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,7 +17,7 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = Employee::all();
+        $employees = Employee::orderBy('fullname', 'asc')->get();
 
         return view('employee.index', compact('employees'));
     }
@@ -46,9 +48,12 @@ class EmployeeController extends Controller
             'status' => 'required | string',
             'salary' => 'required | numeric | max:99999999.99',
             'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'nullable|required_with:password'
         ]);
-
+        
+        
         DB::transaction(function () use ($request) {
+            $leaveTypes = LeaveType::all();
 
             // ✅ 1. Buat User dulu
             $user = User::create([
@@ -70,6 +75,17 @@ class EmployeeController extends Controller
                 'status' => $request->status,
                 'salary' => $request->salary,
             ]);
+
+            foreach ($leaveTypes as $type) {
+                LeaveBalance::create([
+                    'employee_id' => $user->id,
+                    'leave_type_id' => $type->id,
+                    'year' => now()->year,
+                    'total_days' => $type->max_days ?? 0,
+                    'used_days' => 0,
+                    'remaining_days' => $type->max_days ?? 0
+                ]);
+            }
         });
 
         return redirect()->route('employees.index')->with('Success', 'Employee Created Successfully');
@@ -106,9 +122,11 @@ class EmployeeController extends Controller
             'status' => 'required | string',
             'salary' => 'required | numeric | max:99999999.99',
             'password' => 'nullable|min:6|confirmed',
+            'password_confirmation' => 'nullable|required_with:password'
         ]);
 
         DB::transaction(function () use ($request, $id) {
+            $leaveTypes = LeaveType::all();
 
             $employee = Employee::with('user')->findOrFail($id);
 
@@ -137,6 +155,21 @@ class EmployeeController extends Controller
             }
 
             $employee->user->update($userData);
+
+            foreach ($leaveTypes as $type) {
+                LeaveBalance::updateOrCreate(
+                    [
+                        'employee_id'   => $employee->id,
+                        'leave_type_id' => $type->id,
+                        'year'          => now()->year,
+                    ],
+                    [
+                        'total_days'     => $type->max_days ?? 0,
+                        'used_days'      => 0,
+                        'remaining_days' => $type->max_days ?? 0,
+                    ]
+                );
+            }
         });
 
         return redirect()->route('employees.index')->with('Success', 'Employee Updated Successfully');

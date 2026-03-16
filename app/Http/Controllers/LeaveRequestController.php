@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class LeaveRequestController extends Controller
 {
@@ -18,7 +19,7 @@ class LeaveRequestController extends Controller
      */
     public function index()
     {
-        $leaveRequests = LeaveRequest::all();
+        $leaveRequests = LeaveRequest::orderBy('employee_id', 'asc')->get();
 
         return view('leave-request.index', compact('leaveRequests'));
     }
@@ -48,14 +49,14 @@ class LeaveRequestController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date'
         ]);
 
-        if (auth()->user()->role == 'hr') {
+        if (Auth::user()->role == 'hr') {
             $request->validate([
                 'employee_id' => ['required', Rule::exists(Employee::class, 'id'),]
             ]);
 
             $employeeId = $request->employee_id;
         } else {
-            $employeeId = auth()->user()->employee->id;
+            $employeeId = Auth::user()->employee->id;
         }
 
         $start = Carbon::parse($request->start_date);
@@ -77,23 +78,24 @@ class LeaveRequestController extends Controller
             ->with('success', 'Leave request created successfully');
     }
 
-        /**
-         * Display the specified resource.
-         */
-        public function show(string $id)
-        {
-            //
-        }
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
 
-        /**
-         * Show the form for editing the specified resource.
-         */
-        public function edit(LeaveRequest $leaveRequest)
-        {
-            $employees = Employee::all();
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(LeaveRequest $leaveRequest)
+    {
+        $employees = Employee::all();
+        $leaveTypes = LeaveType::all();
 
-            return view('leave-request.edit', compact('leaveRequest', 'employees'));
-        }
+        return view('leave-request.edit', compact('leaveTypes', 'employees', 'leaveRequest'));
+    }
 
     /**
      * Update the specified resource in storage.
@@ -102,12 +104,27 @@ class LeaveRequestController extends Controller
     {
         $request->validate([
             'employee_id' => 'required',
-            'leave_type' => 'required | string',
+            'leave_type_id' => [
+                'required',
+                Rule::exists(LeaveType::class, 'id'),
+            ],
             'start_date' => 'required | date',
             'end_date' => 'required | date'
         ]);
+        $start = Carbon::parse($request->start_date);
+        $end = Carbon::parse($request->end_date);
 
-        $leaveRequest->update($request->all());
+        $totalDays = $start->diffInDays($end) + 1;
+
+        $leaveRequest->update([
+            'employee_id' => $request->employee_id,
+            'leave_type_id' => $request->leave_type_id,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'total_days' => $totalDays,
+            'status' => 'pending',
+            'reason' => $request->reason
+        ]);
 
         return redirect()->route('leave-requests.index')->with('Success', 'Leave Request Update Successfully');
     
@@ -149,8 +166,8 @@ class LeaveRequestController extends Controller
 
             // Update status request
             $leaveRequest->update([
-                'status'      => 'approved',
-                'approved_by' => auth()->id(),
+                'status'      => 'confirm',
+                'approved_by' => Auth::id(),
                 'approved_at' => now(),
             ]);
         });
