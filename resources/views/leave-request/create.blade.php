@@ -48,7 +48,7 @@
                     </div>
                 @endif
                 
-                <form action="{{ route('leave-requests.store') }}" method="POST">
+                <form action="{{ route('leave-requests.store') }}" method="POST" enctype="multipart/form-data">
                    @csrf
         
                     @if(session('role') === 'HR')
@@ -114,6 +114,22 @@
                         <label for="end_date" class="form-label">End Date</label>
                         <input type="text" class="form-control date @error('end_date') is-invalid @enderror" name="end_date" value="{{ old('end_date') }}" required>
                         @error('end_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Reason</label>
+                        <textarea  type="text" class="form-control @error('reason') is-invalid @enderror" name="reason" value="{{ old('reason') }}" required> </textarea>
+                        @error('reason')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="attachment" class="form-label">Supporting Document (optional)</label>
+                        <input type="file" name="attachment" id="attachment" class="form-control @error('attachment') is-invalid @enderror" accept=".pdf,.jpg,.jpeg,.png">
+                        @error('attachment')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

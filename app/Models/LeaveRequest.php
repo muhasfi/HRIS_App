@@ -21,7 +21,7 @@ class LeaveRequest extends Model
         'reason',
         'approved_by',
         'approved_at',
-        'rejected_reason'
+        'attachment',
     ];
 
     protected $dates = [

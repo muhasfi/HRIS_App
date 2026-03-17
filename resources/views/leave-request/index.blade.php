@@ -63,9 +63,17 @@
                                 <td>{{ $leaveRequest->end_date }}</td>
                                 <td>
                                     @if($leaveRequest->status == 'confirm')
-                                        <span class="text-success">{{ ucfirst($leaveRequest->status) }}</span>
+                                        <span class="text-success">
+                                            {{ ucfirst($leaveRequest->status) }}
+                                            <br>
+                                            <small>By {{ $leaveRequest->approver->fullname ?? '-' }}</small>
+                                        </span>
                                     @elseif($leaveRequest->status == 'reject')
-                                        <span class="text-danger">{{ ucfirst($leaveRequest->status) }}</span>
+                                        <span class="text-danger">
+                                            {{ ucfirst($leaveRequest->status) }}
+                                            <br>
+                                            <small>By {{ $leaveRequest->approver->fullname ?? '-' }}</small>
+                                        </span>
                                     @else
                                         <span class="text-warning">{{ ucfirst($leaveRequest->status) }}</span>
                                     @endif
@@ -74,19 +82,20 @@
                                     @if (session('role') == 'HR')
                                         @if ($leaveRequest->status == 'pending')
                                             <a href="{{ route('leave-requests.confirm', $leaveRequest->id) }}" class="btn btn-success btn-sm">Confirm</a>
-                                            <a href="{{ route('leave-requests.reject', $leaveRequest->id) }}" class="btn btn-warning btn-sm">Reject</a>
+                                            <a href="{{ route('leave-requests.reject', $leaveRequest->id) }}" class="btn btn-danger btn-sm">Reject</a>
 
                                         @elseif ($leaveRequest->status == 'reject')
                                             <a href="{{ route('leave-requests.confirm', $leaveRequest->id) }}" class="btn btn-success btn-sm">Confirm</a>
 
                                         @elseif ($leaveRequest->status == 'confirm')
-                                            <a href="{{ route('leave-requests.reject', $leaveRequest->id) }}" class="btn btn-warning btn-sm">Reject</a>
+                                            <a href="{{ route('leave-requests.reject', $leaveRequest->id) }}" class="btn btn-danger btn-sm">Reject</a>
 
                                         @endif
                                     @endif
+                                    <a href="{{ route('leave-requests.show', $leaveRequest->id) }}"class="btn btn-info btn-sm">Show</a>
 
                                     @if (session('role') != 'HR')
-                                    <a href="{{ route('leave-requests.edit', $leaveRequest->id) }}"class="btn btn-info btn-sm">Edit</a>
+                                    <a href="{{ route('leave-requests.edit', $leaveRequest->id) }}"class="btn btn-warning btn-sm">Edit</a>
                                     @endif
 
                                     <form action="{{ route('leave-requests.destroy', $leaveRequest->id) }}" method="POST" style="display: inline">

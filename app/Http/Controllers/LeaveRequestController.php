@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class LeaveRequestController extends Controller
 {
@@ -46,7 +47,9 @@ class LeaveRequestController extends Controller
                 Rule::exists(LeaveType::class, 'id'),
             ],
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date'
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'reason' => 'required|string',
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // max 2MB
         ]);
 
         if (Auth::user()->role == 'hr') {
@@ -64,6 +67,19 @@ class LeaveRequestController extends Controller
 
         $totalDays = $start->diffInDays($end) + 1;
 
+        // Handle upload file attachment
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $extension = $file->getClientOriginalExtension();
+            
+            // Format: attachment_<unique>_<tanggal>.<ext>
+            // Contoh: attachment_a1b2c3d4_2026-03-17.pdf
+            $fileName = 'attachment_emp' . $employeeId . '_' . uniqid() . '_' . now()->format('Y-m-d') . '.' . $extension;
+            
+            $attachmentPath = $file->storeAs('leave-attachments', $fileName, 'public');
+        }
+
         LeaveRequest::create([
             'employee_id' => $employeeId,
             'leave_type_id' => $request->leave_type_id,
@@ -71,7 +87,8 @@ class LeaveRequestController extends Controller
             'end_date' => $request->end_date,
             'total_days' => $totalDays,
             'status' => 'pending',
-            'reason' => $request->reason
+            'reason' => $request->reason,
+            'attachment'    => $attachmentPath,
         ]);
 
         return redirect()->route('leave-requests.index')
@@ -81,9 +98,9 @@ class LeaveRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(LeaveRequest $leaveRequest)
     {
-        //
+        return view('leave-request.show', compact('leaveRequest'));
     }
 
     /**
@@ -111,10 +128,36 @@ class LeaveRequestController extends Controller
             'start_date' => 'required | date',
             'end_date' => 'required | date'
         ]);
+
+        if (Auth::user()->role == 'hr') {
+            $request->validate([
+                'employee_id' => ['required', Rule::exists(Employee::class, 'id')]
+            ]);
+
+            $employeeId = $request->employee_id;
+        } else {
+            $employeeId = Auth::user()->employee->id;
+        }
+
         $start = Carbon::parse($request->start_date);
         $end = Carbon::parse($request->end_date);
 
         $totalDays = $start->diffInDays($end) + 1;
+
+        // ✅ Handle upload attachment baru (jika ada)
+        $attachmentPath = $leaveRequest->attachment; // default: tetap pakai file lama
+        if ($request->hasFile('attachment')) {
+            // Hapus file lama jika ada
+            if ($leaveRequest->attachment && Storage::disk('public')->exists($leaveRequest->attachment)) {
+                Storage::disk('public')->delete($leaveRequest->attachment);
+            }
+
+            $file      = $request->file('attachment');
+            $extension = $file->getClientOriginalExtension();
+            $fileName  = 'attachment_emp' . $employeeId . '_' . uniqid() . '_' . now()->format('Y-m-d') . '.' . $extension;
+
+            $attachmentPath = $file->storeAs('leave-attachments', $fileName, 'public');
+        }
 
         $leaveRequest->update([
             'employee_id' => $request->employee_id,
@@ -123,7 +166,8 @@ class LeaveRequestController extends Controller
             'end_date' => $request->end_date,
             'total_days' => $totalDays,
             'status' => 'pending',
-            'reason' => $request->reason
+            'reason' => $request->reason,
+            'attachment'    => $attachmentPath,
         ]);
 
         return redirect()->route('leave-requests.index')->with('Success', 'Leave Request Update Successfully');
@@ -167,7 +211,7 @@ class LeaveRequestController extends Controller
             // Update status request
             $leaveRequest->update([
                 'status'      => 'confirm',
-                'approved_by' => Auth::id(),
+                'approved_by' => Auth::user()->id,
                 'approved_at' => now(),
             ]);
         });

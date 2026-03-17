@@ -114,45 +114,87 @@
 
                 @else
                     
-                    <form action="{{ route('presences.store') }}" method="POST">
-                        @csrf
+                <form action="{{ route('presences.store') }}" method="POST">
+                    @csrf
+                    <div class="alert alert-light-warning color-warning mb-4">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        <strong>Note:</strong> Mohon izinkan akses <strong>lokasi</strong> & <strong>kamera</strong> sebelum melakukan presensi.
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row g-4">
 
-                        <div class="mb-3"><b>Note</b> : Mohon izinkan akses lokasi & kamera</div>
+                                <div class="mb-3">
+                                        <label for="check_in_lat" class="form-label">Latitude</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-geo"></i></span>
+                                            <input type="text" class="form-control" name="check_in_lat" id="check_in_lat"
+                                                placeholder="Mendapatkan lokasi..." readonly required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="check_in_long" class="form-label">Longitude</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-geo"></i></span>
+                                            <input type="text" class="form-control" name="check_in_long" id="check_in_long"
+                                                placeholder="Mendapatkan lokasi..." readonly required>
+                                        </div>
+                                    </div>
 
-                        <div class="mb-3">
-                            <label for="check_in_lat" class="form-label">Latitude</label>
-                            <input type="text" class="form-control" name="check_in_lat" id="check_in_lat" required>
-                        </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="bi bi-camera me-2"></i>Foto Selfie
+                                    </h6>
 
-                        <div class="mb-3">
-                            <label for="check_in_long" class="form-label">Longitude</label>
-                            <input type="text" class="form-control" name="check_in_long" id="check_in_long" required>
-                        </div>
+                                    <div id="camera-wrapper">
+                                        <video id="camera-stream" autoplay
+                                            class="rounded border d-block w-100 mb-2"
+                                            style="aspect-ratio: 4/3; object-fit: cover;">
+                                        </video>
+                                        <canvas id="canvas" class="d-none"></canvas>
+                                    </div>
 
-                        <div class="mb-3">
-                            <iframe width="500" height="300" src="" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-                        </div>
+                                    <div id="preview-wrapper" class="d-none mb-2">
+                                        <img id="photo-preview" src="" alt="Preview Selfie"
+                                            class="rounded border w-100"
+                                            style="aspect-ratio: 4/3; object-fit: cover;">
+                                    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Foto Selfie</label>
-                            <div>
-                                <video id="camera-stream" width="320" height="240" autoplay style="border:1px solid #ccc; border-radius:8px;"></video>
-                                <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+                                    <div class="d-flex gap-2 mt-2">
+                                        <button type="button" class="btn btn-info" id="btn-capture">
+                                            <i class="bi bi-camera me-1"></i> Ambil Foto
+                                        </button>
+                                        <button type="button" class="btn btn-warning d-none" id="btn-retake">
+                                            <i class="bi bi-arrow-counterclockwise me-1"></i> Ulangi
+                                        </button>
+                                    </div>
+
+                                    <input type="hidden" name="photo_check_in" id="photo-input">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="bi bi-geo-alt me-2"></i>Lokasi Anda
+                                    </h6>
+
+                                    <div class="ratio ratio-4x3">
+                                        <iframe id="map-frame" src="" frameborder="0"
+                                            scrolling="no" marginheight="0" marginwidth="0"
+                                            class="rounded border">
+                                        </iframe>
+                                    </div>
+                                </div>
+
                             </div>
-                            <div class="mt-2">
-                                <button type="button" class="btn btn-info" id="btn-capture">📷 Ambil Foto</button>
-                                <button type="button" class="btn btn-warning" id="btn-retake" style="display:none;">🔄 Ulangi</button>
-                            </div>
-                            <div class="mt-2">
-                                <img id="photo-preview" src="" alt="Preview" style="display:none; width:320px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            {{-- Foto disimpan sebagai base64 --}}
-                            <input type="hidden" name="photo_check_in" id="photo-input">
                         </div>
+                    </div>
 
-                        <button type="submit" class="btn btn-primary" id="btn-present" disabled>Presence</button>
-
-                    </form>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-lg px-5" id="btn-present" disabled>
+                            <i class="bi bi-check-circle me-1"></i> Presensi
+                        </button>
+                    </div>
+                </form>
 
                 @endif
             </div>
