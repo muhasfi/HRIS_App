@@ -170,6 +170,7 @@ return new class extends Migration
 
         //      $table->string('status');
         //      $table->text('reason')->nullable();
+        //      $table->text('attachment');
 
         //     $table->timestamps();
         //     $table->softDeletes();
