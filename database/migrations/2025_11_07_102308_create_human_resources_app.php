@@ -20,15 +20,6 @@ return new class extends Migration
         //     $table->timestamps();
         //     $table->softDeletes();
         // });
-
-        // Schema::create('master.shifts', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name'); // Contoh: "Shift Pagi", "Shift Malam"
-        //     $table->time('start_time'); // Jam mulai shift
-        //     $table->time('end_time');   // Jam selesai shift
-        //     $table->integer('late_tolerance')->default(0); // Toleransi telat dalam menit
-        //     $table->timestamps();
-        // });
         
         // Schema::create('master.roles', function (Blueprint $table) {
         //     $table->id();
@@ -43,13 +34,9 @@ return new class extends Migration
         //     $table->foreignId('user_id')
         //             ->unique() // supaya benar-benar 1 user = 1 employee
         //             ->constrained('auth.users')
-        //             ->cascadeOnDelete(); 
-        // $table->foreignId('shift_id')
-        //         ->nullable()
-        //         ->constrained('master.shifts')
-        //         ->onDelete('set null');
+        //             ->cascadeOnDelete();
         //     $table->string('fullname');
-        //     // $table->string('email')->unique();
+        //     $table->string('email')->unique();
         //     $table->string('phone_number');
         //     $table->string('address');
         //     $table->date('birth_date');
@@ -73,7 +60,7 @@ return new class extends Migration
         // Schema::create('master.employee_schedules', function (Blueprint $table) {
         //     $table->id();
         //     $table->foreignId('employee_id')->constrained('master.employees')->onDelete('cascade');
-        //     $table->tinyInteger('day_of_week'); // 0=Sunday, 1=Monday, ..., 6=Saturday
+        //     $table->tinyInteger('day_of_week');
         //     $table->time('start_time');
         //     $table->time('end_time');
         //     $table->timestamps();

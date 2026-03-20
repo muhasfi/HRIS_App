@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class LeaveRequest extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table = 'transactions.leave_requests';
+    protected $table = 'leave_requests';
 
     protected $fillable = [
         'employee_id',

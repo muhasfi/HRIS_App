@@ -147,7 +147,8 @@
                             type="password" 
                             class="form-control @error('password') is-invalid @enderror" 
                             name="password"
-                            placeholder="Isi password"
+                            placeholder="Masukan password"
+                            autocomplete="new-password"
                         >
                         
                         @error('password')
@@ -161,7 +162,8 @@
                             type="password" 
                             class="form-control" 
                             name="password_confirmation"
-                            placeholder="Ulangi password baru"
+                            placeholder="Ulangi password"
+                            autocomplete="new-password"
                         >
                     </div>
         

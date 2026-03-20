@@ -11,7 +11,7 @@ class Presence extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'transactions.presences';
+    protected $table = 'presences';
 
     protected $fillable = [
         'employee_id',

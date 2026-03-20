@@ -69,12 +69,13 @@
                                 <td>
                                     <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info btn-sm">View</a>
                                     <a href="{{ route('employees.edit', $employee->id) }}"class="btn btn-warning btn-sm">Edit</a>
-
+                                    @if(Auth::user()->id !== $employee->user_id)
                                     <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" style="display: inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin?')">Delete</button>
                                     </form>
+                                    @endif
                                 </td>
                                 
                             </tr>

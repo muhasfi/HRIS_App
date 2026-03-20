@@ -9,6 +9,7 @@ use App\Models\LeaveType;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -66,6 +67,7 @@ class EmployeeController extends Controller
             Employee::create([
                 'user_id' => $user->id,
                 'fullname' => $request->fullname,
+                'email' => $request->email,
                 'phone_number' => $request->phone_number,
                 'address' => $request->address,
                 'birth_date' => $request->birth_date,
@@ -178,8 +180,14 @@ class EmployeeController extends Controller
     public function destroy($id)
     {
         $employee = Employee::findOrFail($id);
+
+        // Cegah hapus akun sendiri
+        if (Auth::user()->id === $employee->user_id) {
+            return redirect()->route('employees.index')->with('error', 'Tidak bisa menghapus akun sendiri');
+        }
+
         $employee->delete();
 
-         return redirect()->route('employees.index')->with('Success', 'Employee Deleted Successfully');
+        return redirect()->route('employees.index')->with('success', 'Employee Deleted Successfully');
     }
 }

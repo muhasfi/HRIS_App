@@ -10,7 +10,7 @@ class EmployeeSchedule extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'master.employee_schedules';
+    protected $table = 'employee_schedules';
     protected $fillable = [
         'employee_id',
         'day_of_week',

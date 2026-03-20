@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeaveType extends Model
 {
-    protected $table = 'transactions.leave_types';
+    protected $table = 'leave_types';
     protected $fillable = [
         'name',
         'max_days',

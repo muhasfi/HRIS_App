@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeaveBalance extends Model
 {
-    protected $table = 'transactions.leave_balances';
+    protected $table = 'leave_balances';
     protected $fillable = [
         'employee_id',
         'leave_type_id',

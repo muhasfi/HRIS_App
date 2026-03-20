@@ -206,7 +206,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    const iframe = document.querySelector('iframe');
     const officeLat = -7.570312354872347;
     const officeLon = 110.80334127983431;
     const threshold = 0.01;
@@ -226,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
 
-            iframe.src = `https://www.google.com/maps?q=${lat},${lon}&output=embed`;
+            document.getElementById('map-frame').src = `https://www.google.com/maps?q=${lat},${lon}&output=embed`;
             document.getElementById('check_in_lat').value = lat;
             document.getElementById('check_in_long').value = lon;
 
@@ -242,7 +241,11 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 alert('Kamu tidak berada di kantor');
             }
+        }, function(err) {
+            alert('Gagal mendapatkan lokasi: ' + err.message);
         });
+    } else {
+        alert('Browser tidak mendukung geolocation');
     }
 
     // === KAMERA ===
@@ -252,6 +255,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnRetake = document.getElementById('btn-retake');
     const photoPreview = document.getElementById('photo-preview');
     const photoInput = document.getElementById('photo-input');
+    const cameraWrapper = document.getElementById('camera-wrapper');
+    const previewWrapper = document.getElementById('preview-wrapper');
 
     // Nyalakan kamera
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -267,16 +272,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Ambil foto
     btnCapture.addEventListener('click', function () {
         const ctx = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataURL = canvas.toDataURL('image/jpeg');
 
         photoInput.value = dataURL;
         photoPreview.src = dataURL;
-        photoPreview.style.display = 'block';
 
-        video.style.display = 'none';
-        btnCapture.style.display = 'none';
-        btnRetake.style.display = 'inline-block';
+        cameraWrapper.classList.add('d-none');
+        previewWrapper.classList.remove('d-none');
+        btnCapture.classList.add('d-none');
+        btnRetake.classList.remove('d-none');
 
         photoTaken = true;
         checkReady();
@@ -286,11 +293,11 @@ document.addEventListener('DOMContentLoaded', function () {
     btnRetake.addEventListener('click', function () {
         photoInput.value = '';
         photoPreview.src = '';
-        photoPreview.style.display = 'none';
 
-        video.style.display = 'block';
-        btnCapture.style.display = 'inline-block';
-        btnRetake.style.display = 'none';
+        cameraWrapper.classList.remove('d-none');
+        previewWrapper.classList.add('d-none');
+        btnCapture.classList.remove('d-none');
+        btnRetake.classList.add('d-none');
 
         photoTaken = false;
         document.getElementById('btn-present').setAttribute('disabled', true);

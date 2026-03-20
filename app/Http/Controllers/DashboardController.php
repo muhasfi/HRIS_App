@@ -30,28 +30,28 @@ class DashboardController extends Controller
         // CHART PRESENCE PER BULAN
         // ==============================
         $presenceChart = Presence::select(
-                DB::raw("to_char(date, 'Mon') as month"),
+                DB::raw("DATE_FORMAT(date, '%b') as month"),
                 DB::raw("count(*) as total")
             )
             ->groupBy('month')
-            ->orderBy(DB::raw("min(date)"))
+            ->orderByRaw("min(date)")
             ->pluck('total', 'month');
 
         // ==============================
         // CHART PAYROLL PER BULAN
         // ==============================
         $payrollChart = Payroll::select(
-                DB::raw("to_char(pay_date, 'Mon') as month"),
+                DB::raw("DATE_FORMAT(pay_date, '%b') as month"),
                 DB::raw("sum(net_salary) as total")
             )
             ->groupBy('month')
-            ->orderBy(DB::raw("min(pay_date)"))
+            ->orderByRaw("min(pay_date)")
             ->pluck('total', 'month');
 
-            // ==============================
-            // LEAVE — berdasarkan role
-            // ==============================
-        $isHR = (session('role') == 'HR'); // sesuaikan dengan guard/role kamu
+        // ==============================
+        // LEAVE — berdasarkan role
+        // ==============================
+        $isHR = (session('role') == 'HR');
 
         $pendingLeaves = null;
         $leaveBalances = null;
