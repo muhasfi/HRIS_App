@@ -4,55 +4,83 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\LeaveBalance;
+use App\Models\LeaveRequest;
 use App\Models\Payroll;
 use App\Models\Presence;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index() {
 
         // Hitung total
-    $employees = Employee::count();
-    $departments = Department::count();
-    $payrolls = Payroll::count();
-    $presences = Presence::count();
+        $employees = Employee::count();
+        $departments = Department::count();
+        $payrolls = Payroll::count();
+        $presences = Presence::count();
 
-    $tasks = Task::latest()->take(5)->get();
+        $tasks = Task::latest()->take(5)->get();
 
-    // ==============================
-    // CHART PRESENCE PER BULAN
-    // ==============================
-    $presenceChart = Presence::select(
-            DB::raw("to_char(date, 'Mon') as month"),
-            DB::raw("count(*) as total")
-        )
-        ->groupBy('month')
-        ->orderBy(DB::raw("min(date)"))
-        ->pluck('total', 'month');
+        // ==============================
+        // CHART PRESENCE PER BULAN
+        // ==============================
+        $presenceChart = Presence::select(
+                DB::raw("to_char(date, 'Mon') as month"),
+                DB::raw("count(*) as total")
+            )
+            ->groupBy('month')
+            ->orderBy(DB::raw("min(date)"))
+            ->pluck('total', 'month');
 
-    // ==============================
-    // CHART PAYROLL PER BULAN
-    // ==============================
-    $payrollChart = Payroll::select(
-            DB::raw("to_char(pay_date, 'Mon') as month"),
-            DB::raw("sum(net_salary) as total")
-        )
-        ->groupBy('month')
-        ->orderBy(DB::raw("min(pay_date)"))
-        ->pluck('total', 'month');
+        // ==============================
+        // CHART PAYROLL PER BULAN
+        // ==============================
+        $payrollChart = Payroll::select(
+                DB::raw("to_char(pay_date, 'Mon') as month"),
+                DB::raw("sum(net_salary) as total")
+            )
+            ->groupBy('month')
+            ->orderBy(DB::raw("min(pay_date)"))
+            ->pluck('total', 'month');
 
-    return view('dashboard.index', compact(
-        'employees',
-        'departments',
-        'payrolls',
-        'presences',
-        'tasks',
-        'presenceChart',
-        'payrollChart'
-    ));
+            // ==============================
+            // LEAVE — berdasarkan role
+            // ==============================
+        $isHR = (session('role') == 'HR'); // sesuaikan dengan guard/role kamu
+
+        $pendingLeaves = null;
+        $leaveBalances = null;
+
+        if ($isHR) {
+            $pendingLeaves = LeaveRequest::with(['employee', 'leaveType'])
+                ->where('status', 'pending')
+                ->latest()
+                ->get();
+        } else {
+            $employeeId = Auth::user()->employee->id;
+            $leaveBalances = LeaveBalance::with('leaveType')
+                ->where('employee_id', $employeeId)
+                ->where('year', now()->year)
+                ->get();
+        }
+
+        return view('dashboard.index', compact(
+            'employees',
+            'departments',
+            'payrolls',
+            'presences',
+            'tasks',
+            'presenceChart',
+            'payrollChart',
+            'isHR',
+            'pendingLeaves',
+            'leaveBalances',
+        ));
     }
 
      public function presence()
@@ -73,5 +101,7 @@ class DashboardController extends Controller
 
         return response()->json($temp);
     }
+
+    
 }
 
