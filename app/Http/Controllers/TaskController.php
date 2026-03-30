@@ -16,13 +16,13 @@ class TaskController extends Controller
         } else {
             $tasks = Task::where('assigned_to', session('employee_id'))->get();
         }
-        return view('task.index', compact('tasks'));
+        return view('admin.task.index', compact('tasks'));
     }
 
     public function create()
     {
         $employees = Employee::all();
-        return view('task.create', compact('employees'));
+        return view('admin.task.create', compact('employees'));
     }
 
     public function store(Request $request)
@@ -51,13 +51,13 @@ class TaskController extends Controller
     {
         $employees = Employee::all();
 
-        return view('task.edit', compact('task','employees'));
+        return view('admin.task.edit', compact('task','employees'));
 
     }
 
     public function show(Task $task)
     {
-        return view('task.show', compact('task'));
+        return view('admin.task.show', compact('task'));
     }
 
     public function update(Request $request, Task $task)

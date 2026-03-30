@@ -19,7 +19,7 @@ class PresenceController extends Controller
         if (session('role') == 'HR') {
 
             $presences = Presence::all();
-            return view('presence.index', compact('presences'));
+            return view('admin.presence.index', compact('presences'));
 
         } else {
 
@@ -37,7 +37,7 @@ class PresenceController extends Controller
                 ->where('day_of_week', $dayOfWeek)
                 ->exists();
 
-            return view('presence.index', compact('presences', 'todayPresence', 'hasSchedule'));
+            return view('admin.presence.index', compact('presences', 'todayPresence', 'hasSchedule'));
         }
     }
 
@@ -47,7 +47,7 @@ class PresenceController extends Controller
     public function create()
     {
         $employees = Employee::all();
-        return view('presence.create', compact('employees'));
+        return view('admin.presence.create', compact('employees'));
     }
 
     /**
@@ -201,7 +201,7 @@ class PresenceController extends Controller
      */
     public function show(Presence $presence)
     {
-        return view('presence.show', compact('presence'));
+        return view('admin.presence.show', compact('presence'));
     }
 
     /**
@@ -211,7 +211,7 @@ class PresenceController extends Controller
     {
         $employees = Employee::all();
 
-        return view('presence.edit', compact('presence', 'employees'));
+        return view('admin.presence.edit', compact('presence', 'employees'));
     }
 
     /**

@@ -20,9 +20,18 @@ class LeaveRequestController extends Controller
      */
     public function index()
     {
-        $leaveRequests = LeaveRequest::orderBy('employee_id', 'asc')->get();
+        // $leaveRequests = LeaveRequest::orderBy('employee_id', 'asc')->get();
 
-        return view('leave-request.index', compact('leaveRequests'));
+        // return view('admin.leave-request.index', compact('leaveRequests'));
+        $isHR = session('role') == 'HR';
+
+        $leaveRequests = $isHR 
+            ? LeaveRequest::orderBy('employee_id', 'asc')->get()
+            : LeaveRequest::where('employee_id', session('employee_id'))->orderBy('created_at', 'desc')->get();
+
+        $view = $isHR ? 'admin.leave-request.index' : 'employee.leave-request.index';
+
+        return view($view, compact('leaveRequests'));
     }
 
     /**
@@ -30,10 +39,18 @@ class LeaveRequestController extends Controller
      */
     public function create()
     {
-        $employees = Employee::select('id','fullname')->get();
+        // $employees = Employee::select('id','fullname')->get();
+        // $leaveTypes = LeaveType::all();
+
+        // return view('admin.leave-request.create', compact('employees', 'leaveTypes'));
+
+        $isHR = session('role') == 'HR';
         $leaveTypes = LeaveType::all();
 
-        return view('leave-request.create', compact('employees', 'leaveTypes'));
+        $employees = $isHR ? Employee::select('id', 'fullname')->get() : null;
+        $view = $isHR ? 'admin.leave-request.create' : 'employee.leave-request.create';
+
+        return view($view, compact('employees', 'leaveTypes'));
     }
 
     /**
@@ -100,7 +117,7 @@ class LeaveRequestController extends Controller
      */
     public function show(LeaveRequest $leaveRequest)
     {
-        return view('leave-request.show', compact('leaveRequest'));
+        return view('admin.leave-request.show', compact('leaveRequest'));
     }
 
     /**
@@ -108,10 +125,21 @@ class LeaveRequestController extends Controller
      */
     public function edit(LeaveRequest $leaveRequest)
     {
-        $employees = Employee::all();
+        $isHR = session('role') == 'HR';
+
         $leaveTypes = LeaveType::all();
 
-        return view('leave-request.edit', compact('leaveTypes', 'employees', 'leaveRequest'));
+        // hanya HR yang butuh list employee
+        $employees = $isHR 
+            ? Employee::select('id', 'fullname')->get() 
+            : null;
+
+        // tentukan view berdasarkan role
+        $view = $isHR 
+            ? 'admin.leave-request.edit' 
+            : 'employee.leave-request.edit';
+
+        return view($view, compact('leaveTypes', 'employees', 'leaveRequest'));
     }
 
     /**

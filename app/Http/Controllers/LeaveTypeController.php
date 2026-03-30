@@ -14,7 +14,7 @@ class LeaveTypeController extends Controller
     {
         $leaveTypes = LeaveType::orderBy('name', 'asc')->get();
 
-        return view('leave-type.index', compact('leaveTypes'));
+        return view('admin.leave-type.index', compact('leaveTypes'));
     }
 
     /**

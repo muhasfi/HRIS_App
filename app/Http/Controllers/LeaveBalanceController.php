@@ -19,7 +19,7 @@ class LeaveBalanceController extends Controller
         ->get()
         ->sortBy('employee.fullname');
 
-        return view('leave-balance.index', compact('leaveBalances'));
+        return view('admin.leave-balance.index', compact('leaveBalances'));
     }
 
     /**
@@ -30,7 +30,7 @@ class LeaveBalanceController extends Controller
         $employees = Employee::all();
         $leaveTypes = LeaveType::all();
 
-        return view('leave-balance.create', compact('employees','leaveTypes'));
+        return view('admin.leave-balance.create', compact('employees','leaveTypes'));
     }
 
     /**
@@ -74,7 +74,7 @@ class LeaveBalanceController extends Controller
         $employees = Employee::all();
         $leaveTypes = LeaveType::all();
 
-        return view('leave-balance.edit', compact('leaveBalance','employees','leaveTypes'));
+        return view('admin.leave-balance.edit', compact('leaveBalance','employees','leaveTypes'));
     }
 
     /**

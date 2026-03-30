@@ -11,12 +11,12 @@ class DepartmentController extends Controller
     {
         $departments = Department::all();
 
-        return view('department.index', compact('departments'));
+        return view('admin.department.index', compact('departments'));
     }
 
     public function create()
     {
-        return view('department.create');
+        return view('admin.department.create');
     }
 
     public function store(Request $request)
@@ -29,14 +29,14 @@ class DepartmentController extends Controller
 
         Department::create($request->all());
 
-        return redirect()->route('departments.index')->with('Success', 'Department Created Successfully');
+        return redirect()->route('admin.departments.index')->with('Success', 'Department Created Successfully');
     }
 
     public function edit($id)
     {
         $department = Department::findOrFail($id);
 
-        return view('department.edit', compact('department'));
+        return view('admin.department.edit', compact('department'));
     }
 
     public function update(Request $request, $id)
@@ -50,7 +50,7 @@ class DepartmentController extends Controller
         $department = Department::findOrFail($id);
         $department->update($request->all());
 
-        return redirect()->route('departments.index')->with('Success', 'Department Updated Successfully');
+        return redirect()->route('admin.departments.index')->with('Success', 'Department Updated Successfully');
     }
 
     public function destroy($id)
@@ -58,6 +58,6 @@ class DepartmentController extends Controller
         $department = Department::findOrFail($id);
         $department->delete();
 
-        return redirect()->route('departments.index')->with('Success', 'Department Deleted Successfully');
+        return redirect()->route('admin.departments.index')->with('Success', 'Department Deleted Successfully');
     }
 }

@@ -69,7 +69,7 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        return view('dashboard.index', compact(
+        return view('admin.dashboard.index', compact(
             'employees',
             'departments',
             'payrolls',

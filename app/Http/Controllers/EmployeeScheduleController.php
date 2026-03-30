@@ -14,7 +14,7 @@ class EmployeeScheduleController extends Controller
     public function index()
     {
         $employees = Employee::with('schedules')->get();
-        return view('employee-schedule.index', compact('employees'));
+        return view('admin.employee-schedule.index', compact('employees'));
     }
 
     /**
@@ -47,7 +47,7 @@ class EmployeeScheduleController extends Controller
     public function edit(Employee $employee)
     {
         $employee->load('schedules');
-        return view('employee-schedule.edit', compact('employee'));
+        return view('admin.employee-schedule.edit', compact('employee'));
     }
 
     /**

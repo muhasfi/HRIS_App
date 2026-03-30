@@ -19,7 +19,7 @@ class EmployeeController extends Controller
     {
         $employees = Employee::orderBy('fullname', 'asc')->get();
 
-        return view('employee.index', compact('employees'));
+        return view('admin.employee.index', compact('employees'));
     }
 
     public function create()
@@ -27,7 +27,7 @@ class EmployeeController extends Controller
         $departments = Department::all();
         $roles = Role::all();
 
-        return view('employee.create', compact('departments', 'roles'));
+        return view('admin.employee.create', compact('departments', 'roles'));
     }
 
     public function store(Request $request)
@@ -88,7 +88,7 @@ class EmployeeController extends Controller
             }
         });
 
-        return redirect()->route('employees.index')->with('Success', 'Employee Created Successfully');
+        return redirect()->route('admin.employees.index')->with('Success', 'Employee Created Successfully');
     }
 
 
@@ -96,7 +96,7 @@ class EmployeeController extends Controller
     {
         $employee = Employee::findOrFail($id);
 
-        return view('employee.show', compact('employee'));
+        return view('admin.employee.show', compact('employee'));
     }
 
     public function edit($id)
@@ -105,7 +105,7 @@ class EmployeeController extends Controller
         $departments = Department::all();
         $roles = Role::all();
 
-        return view('employee.edit', compact('employee', 'departments', 'roles'));
+        return view('admin.employee.edit', compact('employee', 'departments', 'roles'));
     }
 
     public function update(Request $request, $id)
@@ -172,7 +172,7 @@ class EmployeeController extends Controller
             }
         });
 
-        return redirect()->route('employees.index')->with('Success', 'Employee Updated Successfully');
+        return redirect()->route('admin.employees.index')->with('Success', 'Employee Updated Successfully');
     }
 
     public function destroy($id)
@@ -180,6 +180,6 @@ class EmployeeController extends Controller
         $employee = Employee::findOrFail($id);
         $employee->delete();
 
-         return redirect()->route('employees.index')->with('Success', 'Employee Deleted Successfully');
+         return redirect()->route('admin.employees.index')->with('Success', 'Employee Deleted Successfully');
     }
 }

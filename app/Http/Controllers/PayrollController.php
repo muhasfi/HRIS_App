@@ -16,15 +16,25 @@ class PayrollController extends Controller
      */
     public function index()
     {
-        if (session('role') == 'HR') {
-            $payrolls = Payroll::all();
-        } else {
-            $payrolls = Payroll::where('employee_id', session('employee_id'))->get();
-        }
+        // if (session('role') == 'HR') {
+        //     $payrolls = Payroll::all();
+        // } else {
+        //     $payrolls = Payroll::where('employee_id', session('employee_id'))->get();
+        // }
 
-        return view('payroll.index', compact('payrolls'));
+        // return view('payroll.index', compact('payrolls'));
+        $isHR = session('role') == 'HR';
+
+        $payrolls = $isHR
+            ? Payroll::all()
+            : Payroll::where('employee_id', session('employee_id'))->get();
+
+        $view = $isHR
+            ? 'admin.payroll.index'
+            : 'employee.payroll.index';
+
+        return view($view, compact('payrolls'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -32,7 +42,7 @@ class PayrollController extends Controller
     {
         $employees = Employee::all();
 
-        return view('payroll.create', compact('employees'));
+        return view('admin.payroll.create', compact('employees'));
     }
 
     /**
@@ -130,7 +140,7 @@ class PayrollController extends Controller
      */
     public function show(Payroll $payroll)
     {
-        return view('payroll.show', compact('payroll'));
+        return view('admin.payroll.show', compact('payroll'));
     }
 
     /**
@@ -140,7 +150,7 @@ class PayrollController extends Controller
     {
         $employees = Employee::all();
 
-        return view('payroll.edit', compact('payroll', 'employees'));
+        return view('admin.payroll.edit', compact('payroll', 'employees'));
     }
 
     /**
@@ -179,6 +189,6 @@ class PayrollController extends Controller
     public function slip($id)
     {
         $payroll = Payroll::with('employee')->findOrFail($id);
-        return view('payroll.slip', compact('payroll'));
+        return view('admin.payroll.slip', compact('payroll'));
     }
 }
