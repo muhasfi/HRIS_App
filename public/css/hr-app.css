@@ -13,7 +13,7 @@
     padding: 0;
 }
 html {
-    font-size: 16px;
+    font-size: clamp(18px, 1.35vw, 22px);
     -webkit-tap-highlight-color: transparent;
 }
 body {
@@ -96,6 +96,7 @@ a {
 .app {
     display: flex;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 .sidebar-overlay {
     display: none;
@@ -111,7 +112,7 @@ a {
 
 /* ══════════ SIDEBAR ══════════ */
 .sidebar {
-    width: 228px;
+    width: clamp(260px, 18vw, 320px);
     flex-shrink: 0;
     background: var(--bg-surface);
     border-right: 1px solid var(--border);
@@ -147,7 +148,7 @@ a {
 }
 .logo-name {
     font-family: "Sora", sans-serif;
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--text-primary);
     letter-spacing: -0.4px;
@@ -165,7 +166,7 @@ a {
 }
 .nav-label {
     padding: 0 8px 5px;
-    font-size: 10px;
+    font-size: 15px;
     font-weight: 500;
     color: var(--text-muted);
     letter-spacing: 0.9px;
@@ -174,11 +175,11 @@ a {
 .nav-item {
     display: flex;
     align-items: center;
-    gap: 9px;
-    padding: 8px 10px;
+    gap: 10px;
+    padding: 10px 12px;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 18px;
     font-weight: 400;
     color: var(--text-secondary);
     transition: all 0.14s;
@@ -195,8 +196,8 @@ a {
     font-weight: 500;
 }
 .nav-icon {
-    width: 15px;
-    height: 15px;
+    width: 18px;
+    height: 18px;
     stroke: currentColor;
     fill: none;
     stroke-width: 1.5;
@@ -212,7 +213,7 @@ a {
     border-radius: 9px;
     background: var(--red);
     color: #fff;
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -276,7 +277,7 @@ a {
 
 /* ══════════ MAIN & TOPBAR ══════════ */
 .main {
-    margin-left: 228px;
+    margin-left: clamp(260px, 18vw, 320px);
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -288,8 +289,8 @@ a {
     z-index: 50;
     background: var(--bg-surface);
     border-bottom: 1px solid var(--border);
-    padding: 0 22px;
-    height: 54px;
+    padding: 0 clamp(22px, 2.5vw, 44px);
+    height: clamp(60px, 4.5vw, 72px);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -318,7 +319,7 @@ a {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 13px;
+    font-size: 20px;
     color: var(--text-muted);
 }
 .breadcrumb .sep {
@@ -361,13 +362,15 @@ a {
     color: var(--text-primary);
 }
 .app-footer {
-    padding: 12px 22px;
+    padding: 14px clamp(22px, 2.5vw, 44px);
     border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-size: 11.5px;
     color: var(--text-muted);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* ══════════ BUTTONS ══════════ */
@@ -432,7 +435,7 @@ a {
 
 /* ══════════ CONTENT ══════════ */
 .content {
-    padding: 22px;
+    padding: clamp(24px, 2.5vw, 44px);
     flex: 1;
 }
 @keyframes fadeUp {
@@ -450,8 +453,8 @@ a {
 .card {
     background: var(--bg-surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 28px;
     box-shadow: var(--shadow);
 }
 .panel-head {
@@ -462,7 +465,7 @@ a {
 }
 .panel-title {
     font-family: "Sora", sans-serif;
-    font-size: 13.5px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
 }
@@ -479,29 +482,29 @@ a {
 .m-card {
     background: var(--bg-surface);
     border: 1px solid var(--border);
-    border-radius: 11px;
-    padding: 16px 18px;
+    border-radius: 14px;
+    padding: 22px 24px;
     box-shadow: var(--shadow);
 }
 .m-label {
-    font-size: 10.5px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 5px;
+    margin-bottom: 7px;
 }
 .m-val {
     font-family: "Sora", sans-serif;
-    font-size: 24px;
+    font-size: 32px;
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1;
     letter-spacing: -1px;
-    margin-bottom: 3px;
+    margin-bottom: 5px;
 }
 .m-note {
-    font-size: 11.5px;
+    font-size: 14px;
     color: var(--text-muted);
 }
 .m-bar {
@@ -520,10 +523,10 @@ a {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 5px;
+    padding: 4px 10px;
+    border-radius: 6px;
     white-space: nowrap;
 }
 .badge-green {
@@ -575,11 +578,11 @@ a {
 }
 .form-control {
     width: 100%;
-    padding: 9px 12px;
+    padding: 11px 14px;
     background: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    font-size: 13.5px;
+    font-size: 15px;
     font-family: "DM Sans", sans-serif;
     color: var(--text-primary);
     outline: none;
@@ -657,12 +660,12 @@ textarea.form-control {
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 15px;
 }
 thead th {
-    padding: 8px 12px;
+    padding: 10px 14px;
     text-align: left;
-    font-size: 11px;
+    font-size: 12.5px;
     font-weight: 500;
     color: var(--text-muted);
     letter-spacing: 0.5px;
@@ -681,7 +684,7 @@ tbody tr:hover {
     background: var(--bg-muted);
 }
 tbody td {
-    padding: 11px 12px;
+    padding: 14px 14px;
     color: var(--text-primary);
     vertical-align: middle;
 }
@@ -732,6 +735,12 @@ tbody td {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
     margin-bottom: 20px;
+}
+.presence-content-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
 }
 .week-grid {
     display: flex;
@@ -1011,12 +1020,12 @@ tbody td {
 .leave-bal-card {
     background: var(--bg-surface);
     border: 1px solid var(--border);
-    border-radius: 11px;
-    padding: 14px 16px;
+    border-radius: 14px;
+    padding: 20px 22px;
     box-shadow: var(--shadow);
 }
 .leave-bal-type {
-    font-size: 10.5px;
+    font-size: 12.5px;
     font-weight: 500;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -1031,7 +1040,7 @@ tbody td {
 }
 .leave-bal-used {
     font-family: "Sora", sans-serif;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 700;
     color: var(--text-primary);
     letter-spacing: -1px;
@@ -1067,13 +1076,13 @@ tbody td {
     flex-shrink: 0;
 }
 .leave-item-name {
-    font-size: 13.5px;
+    font-size: 15px;
     font-weight: 500;
     color: var(--text-primary);
     margin-bottom: 2px;
 }
 .leave-item-dates {
-    font-size: 11.5px;
+    font-size: 13px;
     color: var(--text-muted);
 }
 .leave-item-right {
@@ -1178,7 +1187,160 @@ tbody td {
     flex: 1;
 }
 
-/* ══════════ PAYROLLS PAGE ══════════ */
+/* ══════════ DASHBOARD ══════════ */
+.dashboard-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.dashboard-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.dashboard-leave-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    padding: 4px 0 8px;
+}
+/* Tabel tampil desktop, card list mobile */
+.dashboard-task-table {
+    display: block;
+}
+.dashboard-task-cards {
+    display: none;
+}
+
+.tasks-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.tasks-show-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 16px;
+}
+.alert-success-bar {
+    background: var(--green-soft);
+    border: 1px solid var(--green-text);
+    color: var(--green-text);
+    border-radius: 8px;
+    padding: 11px 16px;
+    font-size: 13.5px;
+    margin-bottom: 16px;
+}
+.detail-row {
+    display: flex;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+.detail-label {
+    min-width: 140px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+.detail-val {
+    color: var(--text-primary);
+    font-weight: 500;
+    flex: 1;
+}
+
+/* Task: tabel tampil di desktop, card list di mobile */
+.task-table-wrap {
+    display: block;
+}
+.task-card-list {
+    display: none;
+}
+
+/* Presence: tabel tampil di desktop, card list di mobile */
+.presence-table-wrap {
+    display: block;
+}
+.presence-card-list {
+    display: none;
+}
+
+.task-card-item,
+.presence-card-item {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+}
+.presence-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+}
+.presence-card-row:last-child {
+    border: none;
+}
+.presence-card-label {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+.presence-card-val {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+.task-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.task-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.task-card-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+.task-card-due {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+.task-card-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.payroll-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.payroll-content-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 16px;
+}
 .payslip-row {
     display: flex;
     align-items: center;
@@ -1190,26 +1352,26 @@ tbody td {
     border: none;
 }
 .payslip-name {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 500;
     color: var(--text-primary);
 }
 .payslip-div {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-muted);
 }
 .payslip-amount {
     font-family: "Sora", sans-serif;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--text-primary);
 }
 .breakdown-row {
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
+    padding: 10px 0;
     border-bottom: 1px solid var(--border);
-    font-size: 13px;
+    font-size: 15px;
 }
 .breakdown-row:last-child {
     border: none;
@@ -1238,6 +1400,20 @@ tbody td {
 }
 
 /* ══════════ RESPONSIVE ══════════ */
+
+/* ── Large screen (≥1600px) ── */
+@media (min-width: 1600px) {
+    .presence-metrics {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .leave-bal-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .checkin-wrap {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 @media (max-width: 1100px) {
     .checkin-wrap {
         grid-template-columns: 1fr;
@@ -1256,21 +1432,31 @@ tbody td {
     }
 }
 @media (max-width: 768px) {
+    html {
+        font-size: 15px;
+    }
     .sidebar {
         transform: translateX(-100%);
-        width: 250px;
+        width: 250px !important;
     }
     .sidebar.open {
         transform: translateX(0);
     }
     .main {
-        margin-left: 0;
+        margin-left: 0 !important;
     }
     .menu-btn {
         display: flex;
     }
     .content {
-        padding: 14px;
+        padding: 14px !important;
+    }
+    .topbar {
+        padding: 0 14px !important;
+        height: 52px !important;
+    }
+    .app-footer {
+        padding: 12px 14px !important;
     }
     .checkin-wrap {
         grid-template-columns: 1fr;
@@ -1284,14 +1470,67 @@ tbody td {
     .presence-metrics {
         grid-template-columns: 1fr 1fr;
     }
+    .presence-content-grid {
+        grid-template-columns: 1fr;
+    }
+    .payroll-metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+    .payroll-content-grid {
+        grid-template-columns: 1fr;
+    }
+    .tasks-metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+    .tasks-show-grid {
+        grid-template-columns: 1fr;
+    }
+    .dashboard-metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+    .dashboard-charts {
+        grid-template-columns: 1fr;
+    }
+    .dashboard-leave-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .dashboard-task-table {
+        display: none;
+    }
+    .dashboard-task-cards {
+        display: block;
+    }
+    /* Sembunyikan tabel, tampilkan card list */
+    .task-table-wrap {
+        display: none;
+    }
+    .task-card-list {
+        display: block;
+    }
+    .presence-table-wrap {
+        display: none;
+    }
+    .presence-card-list {
+        display: block;
+    }
     .form-row-2 {
         grid-template-columns: 1fr;
     }
-    .topbar {
-        padding: 0 14px;
-    }
     .btn span {
         display: none;
+    }
+    .card {
+        padding: 16px;
+    }
+    .m-card {
+        padding: 14px 16px;
+    }
+    .m-val {
+        font-size: 24px;
+    }
+    .nav-item {
+        font-size: 14px;
+        padding: 9px 10px;
     }
 }
 @media (max-width: 480px) {
@@ -1300,6 +1539,24 @@ tbody td {
     }
     .leave-bal-grid {
         grid-template-columns: 1fr 1fr;
+    }
+    .tasks-metrics {
+        grid-template-columns: 1fr;
+    }
+    .payroll-metrics {
+        grid-template-columns: 1fr;
+    }
+    .dashboard-metrics {
+        grid-template-columns: 1fr 1fr;
+    }
+    .dashboard-leave-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 400px) {
+    .presence-metrics {
+        grid-template-columns: 1fr;
     }
 }
 .leaflet-container {
@@ -1326,4 +1583,186 @@ tbody td {
 
 .payslip-row.active {
     background: rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================================
+   Leave Request — Detail Page
+   Tambahkan ke file CSS utama employee (misal: employee.css)
+   ============================================================ */
+
+/* Body / wrapper */
+.detail-body {
+    padding: 1.25rem;
+}
+
+/* Hero row: avatar + nama + badge */
+.detail-hero {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 1.25rem;
+}
+
+.detail-hero-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.detail-hero-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Avatar besar */
+.av.av-lg {
+    width: 48px;
+    height: 48px;
+    font-size: 16px;
+}
+
+/* Divider */
+.detail-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.25rem 0;
+}
+
+/* Section label */
+.detail-section-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+/* Info grid: 2 kolom */
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+}
+
+.detail-info-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.detail-info-item:nth-child(odd) {
+    padding-right: 16px;
+}
+.detail-info-item:nth-child(even) {
+    padding-left: 16px;
+}
+
+/* Hilangkan border-bottom pada 2 item terakhir */
+.detail-info-grid .detail-info-item:nth-last-child(-n + 2) {
+    border-bottom: none;
+}
+
+.detail-info-key {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+}
+
+.detail-info-val {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* Badge biru untuk "X hari" */
+.badge-blue {
+    background: #e6f1fb;
+    color: #0c447c;
+}
+
+/* Timeline tanggal */
+.leave-timeline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.tl-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.tl-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.tl-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* Kotak alasan */
+.reason-box {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md, 8px);
+    padding: 0.875rem 1rem;
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* Lampiran: file box */
+.attachment-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md, 8px);
+    padding: 0.875rem 1rem;
+    background: var(--bg-secondary);
+}
+
+.att-icon {
+    width: 36px;
+    height: 36px;
+    background: #fcebeb;
+    border-radius: var(--radius-md, 8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.att-filename {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.att-type {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Lampiran: gambar */
+.attachment-img {
+    max-height: 280px;
+    object-fit: contain;
+    border-radius: var(--radius-md, 8px);
+    border: 1px solid var(--border);
+}
+
+/* Tombol aksi lampiran */
+.att-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
 }

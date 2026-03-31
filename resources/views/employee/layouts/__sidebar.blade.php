@@ -1,19 +1,3 @@
-{{--
-    ┌──────────────────────────────────────────────────┐
-    │  COMPONENT: __sidebar.blade.php                  │
-    │  Sidebar navigasi utama HR App                   │
-    │                                                  │
-    │  Props / Variables yang dipakai dari controller: │
-    │  - $activePage  → string, nama halaman aktif     │
-    │    (presence | checkin | tasks | payrolls |      │
-    │     leave-list)                                  │
-    │  - $authUser    → object, data user login        │
-    │    ($authUser->name, $authUser->role,            │
-    │     $authUser->initials)                         │
-    │  - $taskBadge   → int, jumlah task pending       │
-    └──────────────────────────────────────────────────┘
---}}
-
 <nav class="sidebar" id="sidebar">
 
     {{-- ── LOGO ── --}}
@@ -27,6 +11,16 @@
     <div class="nav-group">
         <div class="nav-label">Menu Utama</div>
 
+        <a href="{{ route('dashboard') }}"
+           class="nav-item {{ request()->routeIs('dashboard.*') ? 'active' : '' }}">
+            <svg class="nav-icon" viewBox="0 0 16 16">
+                <rect x="1.5" y="2" width="13" height="12" rx="2"/>
+                <path d="M5 2V5M11 2V5M1.5 7h13"/>
+                <path d="M5 10h.5M8 10h.5M11 10h.5"/>
+            </svg>
+            Dashboard
+        </a>
+
         {{-- Presence --}}
         <a href="{{ route('presences.index') }}"
            class="nav-item {{ request()->routeIs('presences.*') ? 'active' : '' }}">
@@ -37,18 +31,6 @@
             </svg>
             Presence
         </a>
-
-        {{-- Check In / Out --}}
-        {{-- <a href="{{ route('checkin.index') }}"
-           class="nav-item {{ $activePage === 'checkin' ? 'active' : '' }}">
-            <svg class="nav-icon" viewBox="0 0 16 16">
-                <circle cx="8" cy="7" r="3.5"/>
-                <path d="M8 10.5C5 10.5 2.5 12 2.5 14h11C13.5 12 11 10.5 8 10.5z"/>
-                <circle cx="13" cy="4" r="2.5" fill="var(--green)" stroke="none"/>
-                <path d="M12 4l.7.7 1.3-1.3" stroke="#fff" stroke-width="1.2" fill="none"/>
-            </svg>
-            Check In / Out
-        </a> --}}
 
         {{-- Tasks --}}
         <a href="{{ route('tasks.index') }}"
@@ -84,6 +66,24 @@
             </svg>
             Leave Request
         </a>
+
+        {{-- Logout --}}
+        <a href="#"
+        class="nav-item"
+        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+
+            <svg class="nav-icon" viewBox="0 0 16 16">
+                <path d="M6 2.5h-2A1.5 1.5 0 002.5 4v8A1.5 1.5 0 004 13.5h2"/>
+                <path d="M10 11l3-3-3-3"/>
+                <path d="M13 8H6"/>
+            </svg>
+
+            Logout
+        </a>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
 
     </div>{{-- /.nav-group --}}
 

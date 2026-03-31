@@ -16,28 +16,37 @@ class PresenceController extends Controller
      */
     public function index()
     {
-        if (session('role') == 'HR') {
+        $isHR = session('role') === 'HR';
 
-            $presences = Presence::all();
+        if ($isHR) {
+
+            $presences = Presence::latest()->get();
+
             return view('admin.presence.index', compact('presences'));
 
         } else {
 
             $employeeId = session('employee_id');
-            $today = Carbon::today()->toDateString();
+            $today = now()->toDateString();
 
-            $presences = Presence::where('employee_id', $employeeId)->get();
+            $presences = Presence::where('employee_id', $employeeId)
+                ->latest()
+                ->get();
 
             $todayPresence = Presence::where('employee_id', $employeeId)
                 ->where('date', $today)
                 ->first();
 
             $dayOfWeek = now()->dayOfWeek;
+
             $hasSchedule = EmployeeSchedule::where('employee_id', $employeeId)
                 ->where('day_of_week', $dayOfWeek)
                 ->exists();
 
-            return view('admin.presence.index', compact('presences', 'todayPresence', 'hasSchedule'));
+            return view(
+                'employee.presence.index',
+                compact('presences', 'todayPresence', 'hasSchedule')
+            );
         }
     }
 
@@ -47,7 +56,12 @@ class PresenceController extends Controller
     public function create()
     {
         $employees = Employee::all();
-        return view('admin.presence.create', compact('employees'));
+
+        if (session('role') === 'HR') {
+            return view('admin.presence.create', compact('employees'));
+        }
+
+        return view('employee.presence.create', compact('employees'));
     }
 
     /**

@@ -14,26 +14,59 @@ class PayrollController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // if (session('role') == 'HR') {
-        //     $payrolls = Payroll::all();
-        // } else {
-        //     $payrolls = Payroll::where('employee_id', session('employee_id'))->get();
-        // }
-
-        // return view('payroll.index', compact('payrolls'));
-        $isHR = session('role') == 'HR';
-
-        $payrolls = $isHR
-            ? Payroll::all()
-            : Payroll::where('employee_id', session('employee_id'))->get();
-
-        $view = $isHR
-            ? 'admin.payroll.index'
-            : 'employee.payroll.index';
-
-        return view($view, compact('payrolls'));
+        $isHR = session('role') === 'HR';
+    
+        // ── HR: tidak diubah, langsung ke view HR ─────────────
+        if ($isHR) {
+            $payrolls = Payroll::all();
+            return view('admin.payroll.index', compact('payrolls'));
+        }
+    
+        // ── EMPLOYEE: filter + pagination ─────────────────────
+        $query = Payroll::with('employee')
+            ->where('employee_id', session('employee_id'));
+    
+        // Filter bulan (format: YYYY-MM)
+        if ($request->filled('month')) {
+            [$year, $month] = explode('-', $request->month);
+            $query->whereYear('pay_date', $year)
+                ->whereMonth('pay_date', $month);
+        }
+    
+        // Pagination 5 per halaman, query string ikut
+        $payrolls = $query->latest('pay_date')->paginate(5)->withQueryString();
+    
+        // Statistik metric (dari semua data milik employee, bukan yang terfilter)
+        $base = Payroll::where('employee_id', session('employee_id'));
+    
+        $payrollStats = [
+            'total'       => 'Rp ' . number_format(
+                                (clone $base)->sum('net_salary') / 1_000_000, 1
+                            ) . 'M',
+            'total_count' => (clone $base)->count(),
+            'avg_net'     => (clone $base)->avg('net_salary') ?? 0,
+        ];
+    
+        // Dropdown bulan dari data milik employee (PostgreSQL: TO_CHAR)
+        $months = Payroll::where('employee_id', session('employee_id'))
+            ->selectRaw("TO_CHAR(pay_date, 'YYYY-MM') as value,
+                        TO_CHAR(pay_date, 'Month YYYY') as label")
+            ->distinct()
+            ->orderByDesc('value')
+            ->get()
+            ->map(fn ($row) => ['value' => $row->value, 'label' => trim($row->label)])
+            ->toArray();
+    
+        $currentMonth = \Carbon\Carbon::now()->translatedFormat('F Y');
+    
+        return view('employee.payroll.index', compact(
+            'payrolls',
+            'payrollStats',
+            'currentMonth',
+            'months'
+        ));
     }
     /**
      * Show the form for creating a new resource.
@@ -140,7 +173,10 @@ class PayrollController extends Controller
      */
     public function show(Payroll $payroll)
     {
-        return view('admin.payroll.show', compact('payroll'));
+        if (session('role') == 'HR') {
+            return view('admin.payroll.show', compact('payroll'));
+        }
+        return redirect()->back()->with('error', 'Akses ditolak');
     }
 
     /**

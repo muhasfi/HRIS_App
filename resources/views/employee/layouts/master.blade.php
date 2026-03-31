@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <title>@yield('title', 'Karyawan HR')</title>
 
+    {{-- !! Anti-flash: set theme SEBELUM CSS diload !! --}}
+    <script>
+        (function () {
+            var theme = localStorage.getItem('hr-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />

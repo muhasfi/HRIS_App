@@ -16,72 +16,79 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index() {
+public function index()
+{
+    $user = Auth::user();
+    $isHR = session('role') === 'HR';
 
-        // Hitung total
-        $employees = Employee::count();
-        $departments = Department::count();
-        $payrolls = Payroll::count();
-        $presences = Presence::count();
+    // ==============================
+    // EMPLOYEE
+    // ==============================
+    if (!$isHR) {
 
-        $tasks = Task::latest()->take(5)->get();
+        $employeeId = $user->employee->id;
 
-        // ==============================
-        // CHART PRESENCE PER BULAN
-        // ==============================
-        $presenceChart = Presence::select(
-                DB::raw("to_char(date, 'Mon') as month"),
-                DB::raw("count(*) as total")
-            )
-            ->groupBy('month')
-            ->orderBy(DB::raw("min(date)"))
-            ->pluck('total', 'month');
+        $leaveBalances = LeaveBalance::with('leaveType')
+            ->where('employee_id', $employeeId)
+            ->where('year', now()->year)
+            ->get();
 
-        // ==============================
-        // CHART PAYROLL PER BULAN
-        // ==============================
-        $payrollChart = Payroll::select(
-                DB::raw("to_char(pay_date, 'Mon') as month"),
-                DB::raw("sum(net_salary) as total")
-            )
-            ->groupBy('month')
-            ->orderBy(DB::raw("min(pay_date)"))
-            ->pluck('total', 'month');
+        $leaveRequests = LeaveRequest::with('leaveType')
+            ->where('employee_id', $employeeId)
+            ->latest()
+            ->take(5)
+            ->get();
 
-            // ==============================
-            // LEAVE — berdasarkan role
-            // ==============================
-        $isHR = (session('role') == 'HR'); // sesuaikan dengan guard/role kamu
-
-        $pendingLeaves = null;
-        $leaveBalances = null;
-
-        if ($isHR) {
-            $pendingLeaves = LeaveRequest::with(['employee', 'leaveType'])
-                ->where('status', 'pending')
-                ->latest()
-                ->get();
-        } else {
-            $employeeId = Auth::user()->employee->id;
-            $leaveBalances = LeaveBalance::with('leaveType')
-                ->where('employee_id', $employeeId)
-                ->where('year', now()->year)
-                ->get();
-        }
-
-        return view('admin.dashboard.index', compact(
-            'employees',
-            'departments',
-            'payrolls',
-            'presences',
-            'tasks',
-            'presenceChart',
-            'payrollChart',
-            'isHR',
-            'pendingLeaves',
+        return view('employee.dashboard.index', compact(
             'leaveBalances',
+            'leaveRequests'
         ));
     }
+
+    // ==============================
+    // HR / ADMIN
+    // ==============================
+
+    $employees   = Employee::count();
+    $departments = Department::count();
+    $payrolls    = Payroll::count();
+    $presences   = Presence::count();
+
+    $tasks = Task::latest()->take(5)->get();
+
+    $presenceChart = Presence::select(
+            DB::raw("to_char(date, 'Mon') as month"),
+            DB::raw("count(*) as total")
+        )
+        ->groupBy('month')
+        ->orderBy(DB::raw("min(date)"))
+        ->pluck('total', 'month');
+
+    $payrollChart = Payroll::select(
+            DB::raw("to_char(pay_date, 'Mon') as month"),
+            DB::raw("sum(net_salary) as total")
+        )
+        ->groupBy('month')
+        ->orderBy(DB::raw("min(pay_date)"))
+        ->pluck('total', 'month');
+
+    $pendingLeaves = LeaveRequest::with(['employee', 'leaveType'])
+        ->where('status', 'pending')
+        ->latest()
+        ->get();
+
+    return view('admin.dashboard.index', compact(
+        'employees',
+        'departments',
+        'payrolls',
+        'presences',
+        'tasks',
+        'presenceChart',
+        'payrollChart',
+        'pendingLeaves',
+        'isHR'
+    ));
+}
 
      public function presence()
     {

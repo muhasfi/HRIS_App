@@ -117,6 +117,10 @@ class LeaveRequestController extends Controller
      */
     public function show(LeaveRequest $leaveRequest)
     {
+        if (session('role') !== 'HR') {
+            return view('employee.leave-request.show', compact('leaveRequest'));
+        }
+
         return view('admin.leave-request.show', compact('leaveRequest'));
     }
 

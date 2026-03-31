@@ -35,12 +35,20 @@ function toggleTheme() {
    SIDEBAR (Mobile)
 ══════════════════════════════════════════ */
 function toggleSidebar() {
-    document.getElementById("sidebar")?.classList.toggle("open");
-    document.getElementById("overlay")?.classList.toggle("open");
+    const sidebar = document.getElementById("sidebar");
+    if (!sidebar) return;
+    if (sidebar.classList.contains("open")) {
+        closeSidebar();
+    } else {
+        sidebar.classList.add("open");
+        document.getElementById("overlay")?.classList.add("open");
+        document.body.style.overflow = "hidden";
+    }
 }
 function closeSidebar() {
     document.getElementById("sidebar")?.classList.remove("open");
     document.getElementById("overlay")?.classList.remove("open");
+    document.body.style.overflow = "";
 }
 
 /* ══════════════════════════════════════════
@@ -429,35 +437,50 @@ function filterTasks(filter, el) {
     });
 }
 
-// {{-- ===== SCRIPT PAYROLL ===== --}}
+/* ══════════════════════════════════════════
+   DOM READY
+══════════════════════════════════════════ */
+document.addEventListener("DOMContentLoaded", function () {
+    /* Auto-close sidebar saat nav-item diklik di mobile */
+    document.querySelectorAll(".nav-item").forEach(function (item) {
+        item.addEventListener("click", function () {
+            if (window.innerWidth <= 768) closeSidebar();
+        });
+    });
 
-document.querySelectorAll(".payslip-row").forEach((row) => {
-    row.addEventListener("click", function (e) {
-        // prevent klik tombol detail
-        if (e.target.closest("a")) return;
+    /* Tutup sidebar saat resize ke desktop */
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) closeSidebar();
+    });
 
-        // ambil data
-        const salary = this.dataset.salary;
-        const bonuses = this.dataset.bonuses;
-        const deductions = this.dataset.deductions;
-        const total = this.dataset.total;
+    /* ── PAYROLL BREAKDOWN ── */
+    document.querySelectorAll(".payslip-row").forEach((row) => {
+        row.addEventListener("click", function (e) {
+            if (e.target.closest("a")) return;
 
-        const format = (num) => {
-            return "Rp " + new Intl.NumberFormat("id-ID").format(num);
-        };
+            const salary = this.dataset.salary;
+            const bonuses = this.dataset.bonuses;
+            const deductions = this.dataset.deductions;
+            const total = this.dataset.total;
 
-        // update breakdown
-        document.getElementById("bd-salary").innerText = format(salary);
-        document.getElementById("bd-bonus").innerText = format(bonuses);
-        document.getElementById("bd-deduction").innerText =
-            "- " + format(deductions);
-        document.getElementById("bd-total").innerText = format(total);
+            const format = (num) =>
+                "Rp " + new Intl.NumberFormat("id-ID").format(num);
 
-        // active state
-        document
-            .querySelectorAll(".payslip-row")
-            .forEach((r) => r.classList.remove("active"));
-        this.classList.add("active");
+            const bdSalary = document.getElementById("bd-salary");
+            const bdBonus = document.getElementById("bd-bonus");
+            const bdDeduction = document.getElementById("bd-deduction");
+            const bdTotal = document.getElementById("bd-total");
+
+            if (bdSalary) bdSalary.innerText = format(salary);
+            if (bdBonus) bdBonus.innerText = format(bonuses);
+            if (bdDeduction) bdDeduction.innerText = "- " + format(deductions);
+            if (bdTotal) bdTotal.innerText = format(total);
+
+            document
+                .querySelectorAll(".payslip-row")
+                .forEach((r) => r.classList.remove("active"));
+            this.classList.add("active");
+        });
     });
 });
 

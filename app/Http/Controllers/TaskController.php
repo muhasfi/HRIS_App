@@ -11,12 +11,22 @@ class TaskController extends Controller
 {
     public function index()
     {
-        if (session('role') == 'HR') {
-            $tasks = Task::all();
-        } else {
-            $tasks = Task::where('assigned_to', session('employee_id'))->get();
+        $isHR = session('role') === 'HR';
+
+        $query = Task::query();
+
+        if (!$isHR) {
+            $query->where('assigned_to', session('employee_id'));
         }
-        return view('admin.task.index', compact('tasks'));
+
+        $tasks = $query->latest()->get();
+
+        return view(
+            $isHR
+                ? 'admin.task.index'
+                : 'employee.task.index',
+            compact('tasks')
+        );
     }
 
     public function create()
@@ -55,9 +65,20 @@ class TaskController extends Controller
 
     }
 
-    public function show(Task $task)
+   public function show(Task $task)
     {
-        return view('admin.task.show', compact('task'));
+        $isHR = session('role') === 'HR';
+
+        if (!$isHR && $task->assigned_to != session('employee_id')) {
+            abort(403, 'Unauthorized');
+        }
+
+        return view(
+            $isHR
+                ? 'admin.task.show'
+                : 'employee.task.show',
+            compact('task')
+        );
     }
 
     public function update(Request $request, Task $task)

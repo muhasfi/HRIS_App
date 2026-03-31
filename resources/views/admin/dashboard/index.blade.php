@@ -155,132 +155,89 @@
                 </div>
             </div>
 
-            {{-- ===================== LEAVE SECTION ===================== --}}
-<div class="row mb-3">
-    @if($isHR)
-    {{-- HR: Pending Leave Requests --}}
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">
-                    Pending Leave Requests
-                    @if($pendingLeaves->count() > 0)
-                        <span class="badge bg-danger ms-2">{{ $pendingLeaves->count() }}</span>
-                    @endif
-                </h4>
-            </div>
-            <div class="card-body">
-                @if($pendingLeaves->isEmpty())
-                    <p class="text-muted text-center py-3">Tidak ada pengajuan pending.</p>
-                @else
-                <div class="table-responsive">
-                    <table class="table table-hover table-lg">
-                        <thead>
-                            <tr>
-                                <th>Employee</th>
-                                <th>Leave Type</th>
-                                <th>date</th>
-                                <th>Duration</th>
-                                <th>Status</th>
-                                <th>Option</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($pendingLeaves as $leave)
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar avatar-md">
-                                            <img src="https://ui-avatars.com/api/?name={{ $leave->employee->fullname }}&background=random">
-                                        </div>
-                                        <p class="font-bold ms-3 mb-0">{{ $leave->employee->fullname }}</p>
-                                    </div>
-                                </td>
-                                <td>{{ $leave->leaveType->name }}</td>
-                                <td>
-                                    {{ \Carbon\Carbon::parse($leave->start_date)->format('d M') }}
-                                    –
-                                    {{ \Carbon\Carbon::parse($leave->end_date)->format('d M Y') }}
-                                </td>
-                                <td>
-                                    {{ \Carbon\Carbon::parse($leave->start_date)->diffInDays(\Carbon\Carbon::parse($leave->end_date)) + 1 }} hari
-                                </td>
-                                <td>
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                </td>
-                                <td>
-                                    <a href="{{ route('leave-requests.show', $leave->id) }}"
-                                       class="btn btn-sm btn-outline-primary">
-                                        Review
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                @endif
-            </div>
-        </div>
-    </div>
+{{-- ===================== LEAVE SECTION (HR ONLY) ===================== --}}
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">
+                                Pending Leave Requests
+                                @if($pendingLeaves->count() > 0)
+                                    <span class="badge bg-danger ms-2">
+                                        {{ $pendingLeaves->count() }}
+                                    </span>
+                                @endif
+                            </h4>
+                        </div>
 
-    @else
-    {{-- Employee: Leave Balance --}}
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="mb-0">Saldo Cuti {{ now()->year }}</h4>
-            </div>
-            <div class="card-body">
-                @if($leaveBalances->isEmpty())
-                    <p class="text-muted text-center py-3">Belum ada data saldo cuti.</p>
-                @else
-                <div class="row">
-                    @foreach($leaveBalances as $balance)
-                    @php
-                        $used     = $balance->used_days ?? 0;
-                        $total    = $balance->total_days ?? 0;
-                        $remaining = $total - $used;
-                        $pct      = $total > 0 ? round(($used / $total) * 100) : 0;
+                        <div class="card-body">
+                            @if($pendingLeaves->isEmpty())
+                                <p class="text-muted text-center py-3">
+                                    Tidak ada pengajuan pending.
+                                </p>
+                            @else
+                            <div class="table-responsive">
+                                <table class="table table-hover table-lg">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee</th>
+                                            <th>Leave Type</th>
+                                            <th>Date</th>
+                                            <th>Duration</th>
+                                            <th>Status</th>
+                                            <th>Option</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($pendingLeaves as $leave)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar avatar-md">
+                                                        <img src="https://ui-avatars.com/api/?name={{ $leave->employee->fullname }}&background=random">
+                                                    </div>
+                                                    <p class="font-bold ms-3 mb-0">
+                                                        {{ $leave->employee->fullname }}
+                                                    </p>
+                                                </div>
+                                            </td>
 
-                        // Warna progress bar berdasarkan persentase pemakaian
-                        $barColor = match(true) {
-                            $pct >= 80 => 'bg-danger',
-                            $pct >= 50 => 'bg-warning',
-                            default    => 'bg-success',
-                        };
-                    @endphp
-                    <div class="col-12 col-md-4 mb-3">
-                        <div class="card border h-100">
-                            <div class="card-body">
-                                <h6 class="text-muted font-semibold mb-1">
-                                    {{ $balance->leaveType->name }}
-                                </h6>
-                                <div class="d-flex justify-content-between align-items-baseline mb-2">
-                                    <h4 class="font-extrabold mb-0">{{ $remaining }} hari</h4>
-                                    <small class="text-muted">dari {{ $total }} hari</small>
-                                </div>
-                                <div class="progress" style="height: 6px;">
-                                    <div class="progress-bar {{ $barColor }}"
-                                         style="width: {{ $pct }}%"
-                                         title="{{ $used }} hari terpakai">
-                                    </div>
-                                </div>
-                                <small class="text-muted mt-1 d-block">
-                                    {{ $used }} terpakai · {{ $remaining }} tersisa
-                                </small>
+                                            <td>{{ $leave->leaveType->name }}</td>
+
+                                            <td>
+                                                {{ \Carbon\Carbon::parse($leave->start_date)->format('d M') }}
+                                                –
+                                                {{ \Carbon\Carbon::parse($leave->end_date)->format('d M Y') }}
+                                            </td>
+
+                                            <td>
+                                                {{ \Carbon\Carbon::parse($leave->start_date)
+                                                    ->diffInDays(\Carbon\Carbon::parse($leave->end_date)) + 1 }} hari
+                                            </td>
+
+                                            <td>
+                                                <span class="badge bg-warning text-dark">
+                                                    Pending
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <a href="{{ route('leave-requests.show', $leave->id) }}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                    Review
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
+                            @endif
                         </div>
                     </div>
-                    @endforeach
                 </div>
-                @endif
             </div>
-        </div>
-    </div>
-    @endif
-</div>
-{{-- ===================== END LEAVE SECTION ===================== --}}
+{{-- ===================== END LEAVE ===================== --}}
         </div>
     </section>
 </div>
